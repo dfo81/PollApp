@@ -1,0 +1,35 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 0 16px;              // gleichmäßiger Abstand zwischen allen Elementen
+}
+
+h1 {
+    color: var(--text-color);
+    font-family: var(--font-main);
+    font-size: 62px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    align-self: center;     // Bild mittig, Rest linksbündig
+}
+
+button {
+    align-self: center;
+}
+
+p {
+    font-family: mulish;
+    font-size: 18px;
+    color: #fff;
+}

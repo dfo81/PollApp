@@ -1,0 +1,16 @@
+:host {
+    display: flex;
+    align-items: flex-start; // oben ausgerichtet
+    padding: 48px 16px 0 16px;       // 48px Abstand von oben
+    // kein eigener Hintergrund – die Seite dahinter bestimmt die Farbe
+}
+
+a {
+    display: inline-flex; // damit der Link nur so groß wie das Logo ist
+}
+
+img {
+    display: block;
+    height: 46px; // Logo-Höhe nach Bedarf
+    width: auto;
+}
