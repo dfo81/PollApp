@@ -14,15 +14,30 @@
     font-display: swap;
 }
 
-body {
-    scroll-behavior: smooth;
+@font-face {
+    font-family: nokora;
+    src: url('/assets/fonts/Nokora/Nokora-VariableFont_wght.ttf') format('truetype');
+    font-weight: 300 900;   // variable Font: gesamter Gewichts-Bereich
+    font-style: normal;
+    font-display: swap;
+}
+
+* {
     margin: 0;
-    font-family: figtree, sans-serif;   // Standard-Schrift für Fließtext
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-primary);
 }
 
 :root {
-    --bg-color: #35273A;
-    --text-color: #FFB770;
-    --font-main: nerko_one;
-    --font-text: mulish;
+    --bg-primary: #35273A;
+    --bg-secondary: #8E70991A;
+    --primary-orange: #FFB770;
+    --secondary-orange: #FFCFA1;
+    --font-heading: nerko_one;
+    --font-body: mulish;
+    --font-button: nokora;
+    margin: 0;
 }

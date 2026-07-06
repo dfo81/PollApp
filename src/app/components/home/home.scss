@@ -1,35 +1,56 @@
 :host {
-    display: block;
-    min-height: 100vh;
-    background-color: var(--bg-color);
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
 }
 
 main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 54px;
+  padding: 0 16px; // gleichmäßiger Abstand zwischen allen Elementen
+
+  div {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     gap: 24px;
-    padding: 0 16px;              // gleichmäßiger Abstand zwischen allen Elementen
-}
 
-h1 {
-    color: var(--text-color);
-    font-family: var(--font-main);
-    font-size: 62px;
-}
+    h1 {
+      color: var(--primary-orange);
+      font-family: var(--font-heading);
+      font-size: 62px;
+      line-height: 50px;
+      
+    }
 
-img {
-    max-width: 100%;
-    height: auto;
-    align-self: center;     // Bild mittig, Rest linksbündig
-}
+    img {
+      max-width: 100%;
+      height: auto;
+      align-self: center; // Bild mittig, Rest linksbündig
+    }
 
-button {
+    p {
+      font-family: mulish;
+      font-size: 18px;
+      color: #fff;
+      font-weight: 600;
+    }
+  }
+
+  button {
+    display: flex;
+    gap: 10px;
     align-self: center;
-}
-
-p {
-    font-family: mulish;
+    padding: 12px 16px;
+    font-family: var(--font-button);
     font-size: 18px;
-    color: #fff;
+    font-weight: 700;
+    background-color: var(--primary-orange);
+    color: var(--bg-primary);
+    border-radius: 10px;
+    border: none;
+  }
 }
