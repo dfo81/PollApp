@@ -93,4 +93,16 @@ main {
       background-color: #fee9d4;
     }
   }
+
+  .sort {
+    display: flex;
+    gap: 9px;
+
+    span {
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 18px;
+      font-weight: 700;
+    }
+  }
 }
