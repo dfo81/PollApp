@@ -3,14 +3,14 @@
   <div class="carousell">
     <span>Ending soon surveys</span>
     <div class="cards">
-      <div class="card">
+      <div class="card" [routerLink]="['/survey', 1]">
         <div class="description">
           <h5>Health</h5>
           <h3>Fit & Wellness survey!</h3>
         </div>
         <span class="label">Ends in 2 Days</span>
       </div>
-      <div class="card">
+      <div class="card" [routerLink]="['/survey', 2]">
         <div class="description">
           <h5>Health</h5>
           <h3>Fit & Wellness survey!</h3>
@@ -23,8 +23,15 @@
     <button class="left">Active survey</button>
     <button class="right">Past survey</button>
   </div>
-  <div class="sort">
-    <span>Sort by categories</span>
-    <img src="assets/icons/arrow_drop_down.svg" alt="">
+  <div class="survey-sort-box">
+    <div class="sort">
+      <span>Sort by categories</span>
+      <img src="assets/icons/arrow_drop_down.svg" alt="" />
+    </div>
+    <div class="other">
+      <div class="survey" [routerLink]="['/survey', 3]">
+        <span class="title">Team activities</span>
+      </div>
+    </div>
   </div>
 </main>

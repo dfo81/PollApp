@@ -24,7 +24,15 @@
 
 * {
     margin: 0;
+    box-sizing: border-box;
     scroll-behavior: smooth;
+}
+
+html,
+body {
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+    scrollbar-width: none;
 }
 
 body {
@@ -41,3 +49,4 @@ body {
     --font-button: nokora;
     margin: 0;
 }
+
