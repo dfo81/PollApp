@@ -1,22 +1,73 @@
-.published-survey {
+.frame-survey {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  font-family: var(--font-body);
 
-  .published-box {
+  .content-survey {
     display: flex;
     flex-direction: column;
     height: 100vh;
     max-width: 702px;
-    background-color: #8E70991A;
-    border-radius: 40px 100px 40px 40px;
+    background-color: #8e70991a;
+    border-radius: 0 100px 0 0;
+    padding: 40px 15px;
+    gap: 40px;
 
-    .header {
+    .main-frame {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      gap: 24px;
 
-      
+      .status-hl-box {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .status {
+          display: flex;
+          justify-content: space-between;
+          padding-right: 10px;
+
+          span {
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            background-color: var(--primary-orange);
+            border-radius: 0 14px 0 0;
+            
+          }
+        }
+
+        .date {
+          display: flex;
+          color: var(--primary-purple);
+          justify-content: space-between;
+          font-size: 14px;
+        }
+
+        h1 {
+          font-family: var(--font-heading);
+          font-size: 48px;
+          font-weight: 400;
+          color: #ee9236;
+          line-height: 42px;
+        }
+      }
+
+      span {
+        color: var(--secondary-purple);
+      }
+    }
+  }
+
+  .questions-box {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+
+    h4 {
+      font-weight: 700;
     }
   }
 }
-
