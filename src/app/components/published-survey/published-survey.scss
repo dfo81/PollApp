@@ -7,7 +7,6 @@
   .content-survey {
     display: flex;
     flex-direction: column;
-    height: 100vh;
     max-width: 702px;
     background-color: #8e70991a;
     border-radius: 0 100px 0 0;
@@ -118,6 +117,20 @@
           }
         }
       }
+    }
+
+    button {
+      display: flex;
+      margin-left: auto;
+      background-color: var(--primary-orange);
+      border: none;
+      border-radius: 10px;
+      padding: 12px 16px;
+      gap: 10px;
+      color: var(--primary-purple);
+      font-family: var(--font-button);
+      font-size: 18px;
+      font-weight: 700;
     }
   }
 }
