@@ -1,0 +1,156 @@
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 54px;
+  padding: 0 16px;
+  font-family: var(--font-body);
+}
+
+/* * {
+  outline: 1px solid red;
+} */
+
+.frame {
+  display: flex;
+  flex-direction: column;
+  margin: 0 -16px 57px;
+  padding: 40px 24px;
+  background-color: var(--primary-purple);
+  border-radius: 5px 100px 5px 5px;
+  gap: 32px;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+
+    .title {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      h5 {
+        display: flex;
+        align-items: center;
+        padding: 3px 12px 3px 8px;
+        margin-right: auto;
+        background-color: var(--secondary-orange);
+        border-radius: 0 14px 0 0;
+      }
+
+      h2 {
+        font-family: var(--font-heading);
+        font-size: 56px;
+        line-height: 42px;
+        color: var(--primary-orange);
+      }
+    }
+
+    img {
+      align-self: flex-start;
+    }
+  }
+}
+
+.input-fields {
+  display: flex;
+  flex-direction: column;
+  background-color: #8e709929;
+  padding: 40px 10px;
+  border-radius: 5px 80px 5px 5px;
+  font-size: 18px;
+  color: white;
+
+  input {
+    margin-bottom: 10px;
+    height: 37px;
+    border-radius: 5px 20px 5px 5px;
+    border: none;
+  }
+
+  .input-title {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  img {
+    padding-right: 12px;
+  }
+
+  .info-frame {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 4px;
+  }
+
+  .drop-down {
+    display: flex;
+    color: white;
+    gap: 12px;
+    padding-bottom: 32px;
+  }
+
+  textarea {
+    height: 108px;
+    border-radius: 5px 20px 5px 5px;
+  }
+
+  button {
+  display: flex;
+  background-color: #FFB7704D;
+  border: none;
+  margin: auto;
+  padding: 8px 0 8px 12px;
+  gap: 10px;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+}
+}
+
+.qna-box {
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+  gap: 6px;
+
+  .answer-title {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+
+    .answers-checkbox {
+      display: flex;
+      font-size: 12px;
+      align-items: center;
+      
+      span {
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  .answer {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.add-button {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 54px;
+  border-bottom: 1px solid white;
+  margin: 12px auto 72px 12px;
+}
+
+button {
+  display: flex;
+  background-color: var(--primary-orange);
+  margin: auto;
+  padding: 12px 16px;
+  border-radius: 10px;
+  gap: 8px;
+  font-size: 18px;
+  border: none;
+}
