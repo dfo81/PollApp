@@ -184,6 +184,7 @@ main {
       justify-self: start; // linksbündig statt zentriert
       margin-top: 30px;
       transition: background-color 0.2s ease-in-out;
+      background-color: var(--secondary-orange);
 
       // Icon erst beim Hover sichtbar. Der gap wird auf 0 gesetzt und der
       // Abstand stattdessen über margin-left am Icon geregelt – sonst bliebe
@@ -202,7 +203,7 @@ main {
       }
 
       &:hover {
-        background-color: var(--secondary-orange);
+        background-color: var(--primary-orange);
       }
 
       &:hover img,
