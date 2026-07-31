@@ -39,6 +39,13 @@ body {
     background-color: var(--bg-primary);
 }
 
+// globale Kontentbegrenzung: Inhalt max. 1440px breit und zentriert
+main {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+}
+
 :root {
     --bg-primary: #35273A;
     --bg-secondary: #8E70991A;

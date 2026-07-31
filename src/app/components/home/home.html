@@ -1,16 +1,35 @@
 <main>
   <div>
-    <h1>Collect Feedback,<br>Unlock Ideas</h1>
+    <h1>Collect Feedback,<br />Unlock Ideas</h1>
 
-  <img src="assets/img/home_mobile.svg" alt="Survey illustration">
+    <div class="illustration">
+      <picture>
+        <source srcset="assets/img/home_image.svg" media="(min-width: 768px)" />
+        <img src="assets/img/home_mobile.svg" alt="Survey illustration" />
+      </picture>
 
-  <p>
-    Create and share surveys in minutes – from team events to workplace
-    culture. Collect opinions, engage your audience, and turn feedback
-    into action.
-  </p>
+      <span class="badge badge--bubble" aria-hidden="true">
+        <img src="assets/img/typing_bubble.svg" alt="" />
+      </span>
+      <span class="badge badge--question" aria-hidden="true">
+        <img src="assets/img/question.svg" alt="" />
+      </span>
+      <span class="badge badge--star" aria-hidden="true">
+        <img src="assets/img/star.svg" alt="" />
+      </span>
+      <span class="badge badge--check" aria-hidden="true">
+        <img src="assets/img/check.svg" alt="" />
+      </span>
+    </div>
+
+    <p>
+      Create and share surveys in minutes – from team events to workplace culture. Collect opinions,
+      engage your audience, and turn feedback into action.
+    </p>
   </div>
-  <button type="button" routerLink="/create">New survey <img src="assets/icons/add_circle_purple.svg" alt=""></button>
+  <button type="button" routerLink="/create">
+    New survey <img src="assets/icons/add_circle_purple.svg" alt="" />
+  </button>
 </main>
 
-<app-surveys/>
+<app-surveys />

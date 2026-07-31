@@ -13,7 +13,7 @@ main {
   gap: 54px;
   padding: 0 16px; // gleichmäßiger Abstand zwischen allen Elementen
 
-  div {
+  > div {
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -23,13 +23,22 @@ main {
       font-family: var(--font-heading);
       font-size: 62px;
       line-height: 50px;
-      
+
     }
 
-    img {
-      max-width: 100%;
-      height: auto;
+    .illustration {
+      position: relative; // Bezugsrahmen für die Badges
       align-self: center; // Bild mittig, Rest linksbündig
+
+      picture img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+      }
+
+      .badge {
+        display: none; // Badges nur im Desktop-Layout
+      }
     }
 
     p {
@@ -52,5 +61,195 @@ main {
     color: var(--bg-primary);
     border-radius: 10px;
     border: none;
+    cursor: pointer;
+  }
+}
+
+@media (min-width: 768px) {
+  main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    align-items: center;
+    column-gap: 64px;
+    row-gap: 24px;
+    padding: 0 48px;
+
+    > div {
+      display: contents; // h1, Illustration, p werden direkte Grid-Items
+    }
+
+    h1 {
+      grid-column: 1;
+      grid-row: 1;
+      font-size: 72px;
+      line-height: 64px;
+    }
+
+    p {
+      grid-column: 1;
+      grid-row: 2;
+      text-align: left;
+    }
+
+    > div > .illustration {
+      grid-column: 2;
+      grid-row: 1 / 4;
+      align-self: center;
+      justify-self: center;
+
+      picture img {
+        height: 426px;
+        width: auto;
+      }
+
+      // .badge trägt Position + Schwebe-Animation,
+      // das innere img die Skalierung – so kollidieren die transforms nicht
+      .badge {
+        display: block;
+        position: absolute;
+
+        img {
+          display: block;
+          width: 100%;
+          height: auto;
+          transform: scale(1);
+          transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+      }
+
+      // Positionen in % der Illustration, damit sie mitskalieren
+      .badge--bubble {
+        top: 8%;
+        left: 15%;
+        width: 26%;
+      }
+
+      .badge--question {
+        top: 28%;
+        right: 10%;
+        width: 18%;
+      }
+
+      .badge--star {
+        top: 48%;
+        left: 15%;
+        width: 18%;
+      }
+
+      .badge--check {
+        bottom: 6%;
+        right: 8%;
+        width: 19%;
+      }
+
+      // Maus über der Illustration: alle Badges wachsen um 10% …
+      &:hover .badge img {
+        transform: scale(1.1);
+      }
+
+      // … und schweben. Zwei Kurven (a/b) im Wechsel, dazu unterschiedliche
+      // Laufzeiten – gleiche Dauer + Delay bliebe sonst dauerhaft im Gleichtakt.
+      &:hover .badge--bubble {
+        animation: badge-float-a 2.4s ease-in-out infinite;
+      }
+
+      &:hover .badge--question {
+        animation: badge-float-b 3.1s ease-in-out 0.2s infinite;
+      }
+
+      &:hover .badge--star {
+        animation: badge-float-b 2.7s ease-in-out 0.5s infinite;
+      }
+
+      &:hover .badge--check {
+        animation: badge-float-a 3.5s ease-in-out 0.3s infinite;
+      }
+
+      // Maus direkt auf einem Badge: stärker hervorheben, Schweben stoppt
+      .badge:hover {
+        animation: none;
+        z-index: 1;
+
+        img {
+          transform: scale(1.25) rotate(-6deg);
+        }
+      }
+    }
+
+    button {
+      grid-column: 1;
+      grid-row: 3;
+      align-self: start;
+      justify-self: start; // linksbündig statt zentriert
+      margin-top: 30px;
+      transition: background-color 0.2s ease-in-out;
+
+      // Icon erst beim Hover sichtbar. Der gap wird auf 0 gesetzt und der
+      // Abstand stattdessen über margin-left am Icon geregelt – sonst bliebe
+      // beim eingeklappten Icon eine 10px-Lücke im Padding stehen.
+      gap: 0;
+
+      img {
+        width: 0; // klappt zusammen, Button umschließt nur den Text
+        margin-left: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition:
+          width 0.25s ease,
+          margin-left 0.25s ease,
+          opacity 0.2s ease;
+      }
+
+      &:hover {
+        background-color: var(--secondary-orange);
+      }
+
+      &:hover img,
+      &:focus-visible img {
+        width: 24px; // natürliche Größe von add_circle_purple.svg
+        margin-left: 10px;
+        opacity: 1;
+      }
+    }
+  }
+}
+
+// a: erst hoch, dann nach links – gegen den Uhrzeigersinn
+@keyframes badge-float-a {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-12px) rotate(5deg);
+  }
+  66% {
+    transform: translateX(-5px) rotate(-5deg);
+  }
+}
+
+// b: gespiegelt – erst nach rechts/runter, dann hoch
+@keyframes badge-float-b {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  33% {
+    transform: translate(6px, 8px) rotate(-6deg);
+  }
+  66% {
+    transform: translateY(-10px) rotate(3deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge,
+  .illustration:hover .badge {
+    animation: none !important;
+  }
+
+  .badge img {
+    transition: none;
   }
 }
