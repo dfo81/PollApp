@@ -2,7 +2,7 @@ main {
   display: flex;
   flex-direction: column;
   gap: 48px;
-  padding: 0 16px;
+  max-width: 1298px;
 
   h1 {
     font-size: 54px;
@@ -30,7 +30,7 @@ main {
       overflow-y: hidden;
       overscroll-behavior-x: contain;
       scrollbar-width: none;
-      gap: 16px;
+      gap: var(--content-gap);
 
       .card {
         display: flex;
@@ -44,8 +44,13 @@ main {
         padding: 24px 16px;
         cursor: pointer;
 
+        @media (min-width: 768px) {
+          width: 321px;
+          height: 310px;
+        }
+
         &:active {
-          background-color: #F4E9FB;
+          background-color: #f4e9fb;
         }
 
         .description {
