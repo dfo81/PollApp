@@ -17,6 +17,13 @@
         </div>
         <span class="label">Ends in 2 Days</span>
       </div>
+      <div class="card" [routerLink]="['/survey', 2]">
+        <div class="description">
+          <h5>Health</h5>
+          <h3>Fit & Wellness survey!</h3>
+        </div>
+        <span class="label">Ends in 2 Days</span>
+      </div>
     </div>
   </div>
   <div class="buttons">
@@ -29,6 +36,12 @@
       <img src="assets/icons/arrow_drop_down_white.svg" alt="" />
     </div>
     <div class="other">
+      <div class="survey" [routerLink]="['/survey', 3]">
+        <span class="title">Team activities</span>
+      </div>
+      <div class="survey" [routerLink]="['/survey', 3]">
+        <span class="title">Team activities</span>
+      </div>
       <div class="survey" [routerLink]="['/survey', 3]">
         <span class="title">Team activities</span>
       </div>

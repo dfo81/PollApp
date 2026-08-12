@@ -10,6 +10,7 @@ main {
     color: var(--primary-orange);
     text-align: center;
     letter-spacing: 2%;
+    text-shadow: 3px 3px 5px #000;
   }
 
   .carousell {
@@ -127,13 +128,14 @@ main {
 
     .other {
       display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
       gap: 16px;
 
       .survey {
         display: flex;
         flex-direction: column;
         height: 147px;
+        width: 100%;
         max-width: 513px;
         background-color: #d9d9d914;
         border-radius: 5px 50px 5px 5px;
@@ -149,3 +151,5 @@ main {
     }
   }
 }
+
+* {outline: 1px solid red;}
