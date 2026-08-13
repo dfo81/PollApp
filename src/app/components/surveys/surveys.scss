@@ -10,7 +10,7 @@ main {
     color: var(--primary-orange);
     text-align: center;
     letter-spacing: 2%;
-    text-shadow: 3px 3px 5px #000;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
   }
 
   .carousell {
@@ -127,20 +127,24 @@ main {
     padding-bottom: 70px;
 
     .other {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: 1fr;
       gap: 16px;
+
+      @media (min-width: 940px) {
+        grid-template-columns: repeat(2, 1fr);
+      }
 
       .survey {
         display: flex;
         flex-direction: column;
         height: 147px;
-        width: 100%;
         max-width: 513px;
         background-color: #d9d9d914;
         border-radius: 5px 50px 5px 5px;
         padding: 12px 16px;
         cursor: pointer;
+        box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.2);
 
         .title {
           color: var(--secondary-orange);
@@ -151,5 +155,3 @@ main {
     }
   }
 }
-
-* {outline: 1px solid red;}
