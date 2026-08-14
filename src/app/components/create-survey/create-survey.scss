@@ -44,8 +44,36 @@ main {
       }
     }
 
-    img {
-      align-self: flex-start;
+    .buttons {
+      display: flex;
+      align-items: flex-start; // mobil: X oben ausgerichtet
+
+      // mobil nur das X, ab Desktop übernimmt der Cancel-Button
+      .exit {
+        display: block;
+        cursor: pointer;
+      }
+
+      .cancel {
+        display: none;
+        align-items: center;
+        margin: 0;
+        background-color: #ffb7704d;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      @media (min-width: 1024px) {
+        align-items: flex-end; // Cancel unten in der Box
+
+        .exit {
+          display: none;
+        }
+
+        .cancel {
+          display: flex;
+        }
+      }
     }
   }
 }
