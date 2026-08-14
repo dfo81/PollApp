@@ -1,3 +1,13 @@
-<a href="#">
-    <img [src]="light() ? 'assets/icons/Logo_dark.svg' : 'assets/icons/Logo_light.svg'" alt="Logo">
-</a>
+<header>
+  <a href="#">
+    <img
+      [src]="light() ? 'assets/icons/Logo_dark.svg' : 'assets/icons/Logo_light.svg'"
+      alt="Logo"
+    />
+  </a>
+  @if (createButton()) {
+    <button>
+      Create survey
+    </button>
+  }
+</header>

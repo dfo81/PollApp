@@ -10,4 +10,7 @@ export class Header {
   // true  = helle Seite  -> dunkles Logo
   // false = dunkle Seite -> helles Logo
   readonly light = input(false);
+
+  // "Create survey"-Button anzeigen (nur auf Survey-Seiten, ab Desktop)
+  readonly createButton = input(false);
 }

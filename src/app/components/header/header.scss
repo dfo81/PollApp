@@ -6,20 +6,42 @@
   margin-inline: auto; // gleiche Kontentbegrenzung wie main
   padding: 48px var(--content-padding-inline) 54px; // seitlich wie der Content
   // kein eigener Hintergrund – die Seite dahinter bestimmt die Farbe
-}
 
-a {
-  display: inline-flex; // damit der Link nur so groß wie das Logo ist
-}
-
-img {
-  display: block;
-  height: 46px; // Logo-Höhe nach Bedarf
-  width: auto;
-}
-
-@media (min-width: 768px) {
-  :host {
+  @media (min-width: 768px) {
     padding-block: 54px;
+  }
+}
+
+header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+
+  a {
+    display: inline-flex; // damit der Link nur so groß wie das Logo ist
+  }
+
+  img {
+    display: block;
+    height: 46px; // Logo-Höhe nach Bedarf
+    width: auto;
+  }
+
+  button {
+    display: none;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--secondary-orange);
+    font-size: 18px;
+    padding: 10px 16px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--primary-orange);
+    }
+
+    @media(min-width: 1024px) {
+      display: block;
+    }
   }
 }

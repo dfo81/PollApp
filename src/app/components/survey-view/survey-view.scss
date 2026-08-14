@@ -2,4 +2,8 @@ main {
   display: flex;
   flex-direction: column;
   gap: 54px;
+
+  @media (min-width: 1024px){
+    flex-direction: row;
+  }
 }
