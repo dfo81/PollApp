@@ -9,23 +9,19 @@
     flex-direction: column;
 
     button {
-      display: flex;
-      font-size: 18px;
-      gap: 4px;
-      border: none;
       margin-left: 10px;
       margin-right: auto;
-      align-items: center;
+      gap: 4px;
       background-color: transparent;
       border-radius: 5px;
-      cursor: pointer;
 
       img {
         content: url('/assets/icons/arrow_drop_down_purple.svg');
       }
 
       &:hover {
-        background-color: #8e70991a;
+        background-color: var(--bg-secondary);
+
         img {
           content: url('/assets/icons/arrow_drop_down_orange.svg');
         }
@@ -37,14 +33,14 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
-    color: var(--primary-purple);
     padding: 15px;
     font-family: var(--font-body);
+    color: var(--primary-purple);
 
     .title {
       display: flex;
-      gap: 10px;
       align-items: center;
+      gap: 10px;
       font-family: var(--font-heading);
       font-size: 22px;
 
@@ -79,9 +75,8 @@
 
           .progressbar {
             width: 100%;
-            background-color: #EDEDED;
+            background-color: #ededed;
             border-radius: 0 20px 20px 0;
-            
 
             .filler {
               height: 100%;
@@ -92,7 +87,7 @@
           }
 
           .percent {
-            color: #D79451;
+            color: #d79451;
           }
         }
       }

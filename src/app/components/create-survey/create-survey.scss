@@ -1,3 +1,6 @@
+$button-soft: #ffb7704d;
+$button-soft-hover: #ffb77099;
+
 main {
   display: flex;
   flex-direction: column;
@@ -5,18 +8,14 @@ main {
   font-family: var(--font-body);
 }
 
-/* * {
-  outline: 1px solid red;
-} */
-
 .frame {
   display: flex;
   flex-direction: column;
   margin: 0 -16px 57px;
   padding: 40px 24px;
+  gap: 32px;
   background-color: var(--primary-purple);
   border-radius: 5px 100px 5px 5px;
-  gap: 32px;
 
   .header {
     display: flex;
@@ -30,8 +29,8 @@ main {
       h5 {
         display: flex;
         align-items: center;
-        padding: 3px 12px 3px 8px;
         margin-right: auto;
+        padding: 3px 12px 3px 8px;
         background-color: var(--secondary-orange);
         border-radius: 0 14px 0 0;
       }
@@ -46,57 +45,77 @@ main {
 
     .buttons {
       display: flex;
-      align-items: flex-start; // mobil: X oben ausgerichtet
+      align-items: flex-start;
 
-      // mobil nur das X, ab Desktop übernimmt der Cancel-Button
+      .exit,
+      .cancel {
+        border-radius: 10px;
+        cursor: pointer;
+
+        &:hover {
+          background-color: $button-soft-hover;
+        }
+      }
+
       .exit {
         display: block;
-        cursor: pointer;
       }
 
       .cancel {
         display: none;
-        align-items: center;
-        margin: 0;
-        background-color: #ffb7704d;
+        padding: 12px 16px;
+        background-color: $button-soft;
         color: #fff;
-        cursor: pointer;
       }
 
       @media (min-width: 1024px) {
-        align-items: flex-end; // Cancel unten in der Box
+        align-items: flex-end;
 
         .exit {
           display: none;
         }
 
         .cancel {
-          display: flex;
+          display: inline-flex;
         }
       }
     }
+  }
+
+  .publish {
+    margin: auto;
   }
 }
 
 .input-fields {
   display: flex;
   flex-direction: column;
-  background-color: #8e709929;
   padding: 40px 10px;
+  background-color: #8e709929;
   border-radius: 5px 80px 5px 5px;
   font-size: 18px;
-  color: white;
+  color: #fff;
 
-  input {
-    margin-bottom: 10px;
-    height: 37px;
-    border-radius: 5px 20px 5px 5px;
-    border: none;
-  }
-
-  .input-title {
+  .input-title,
+  .answer-title,
+  .answer {
     display: flex;
     justify-content: space-between;
+  }
+
+  input,
+  textarea {
+    border: none;
+    border-radius: 5px 20px 5px 5px;
+  }
+
+  input {
+    height: 37px;
+    margin-bottom: 10px;
+  }
+
+  textarea {
+    height: 108px;
   }
 
   img {
@@ -107,7 +126,6 @@ main {
   .description-frame {
     display: flex;
     flex-direction: column;
-    width: 100%;
     gap: 4px;
   }
 
@@ -117,31 +135,54 @@ main {
 
   .drop-down {
     display: flex;
-    color: white;
     gap: 12px;
     padding-bottom: 32px;
   }
 
-  textarea {
-    height: 108px;
-    border-radius: 5px 20px 5px 5px;
+  .qna-box {
+    display: flex;
+    flex-direction: column;
+    margin-top: 24px;
+    gap: 6px;
+
+    .answers-checkbox {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+
+      span {
+        flex-shrink: 0;
+      }
+    }
   }
 
-  button {
-  display: flex;
-  background-color: #FFB7704D;
-  border: none;
-  margin: auto;
-  padding: 8px 0 8px 12px;
-  gap: 10px;
-  border-radius: 10px;
-  color: white;
-  font-size: 16px;
-}
+  .add-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px auto 72px 12px;
+    padding: 8px 0 8px 12px;
+    border-bottom: 1px solid #fff;
+    cursor: pointer;
 
-  // Desktop: zwei Spalten. Die Auto-Platzierung des Grids verteilt die Kinder
-  // reihenweise – info-frame links, description rechts, danach Frage 1 links,
-  // Frage 2 rechts, Frage 3 wieder links usw. (jeweils mit ihren Answers).
+    &:hover {
+      background-color: #faf5fe33;
+    }
+  }
+
+  .add-question {
+    margin-left: 12px;
+    margin-right: auto;
+    padding: 8px 0 8px 12px;
+    background-color: $button-soft;
+    font-size: 16px;
+    color: #fff;
+
+    &:hover {
+      background-color: $button-soft-hover;
+    }
+  }
+
   @media (min-width: 1024px) {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -154,54 +195,8 @@ main {
     }
 
     > .add-question {
-      grid-column: 1 / -1;
+      justify-self: start;
+      align-self: start;
     }
   }
-}
-
-.qna-box {
-  display: flex;
-  flex-direction: column;
-  margin-top: 24px;
-  gap: 6px;
-
-  .answer-title {
-    display: flex;
-    justify-content: space-between;
-    font-size: 18px;
-
-    .answers-checkbox {
-      display: flex;
-      font-size: 12px;
-      align-items: center;
-      
-      span {
-        flex-shrink: 0;
-      }
-    }
-  }
-
-  .answer {
-    display: flex;
-    justify-content: space-between;
-  }
-}
-
-.add-button {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 54px;
-  border-bottom: 1px solid white;
-  margin: 12px auto 72px 12px;
-}
-
-button {
-  display: flex;
-  background-color: var(--primary-orange);
-  margin: auto;
-  padding: 12px 16px;
-  border-radius: 10px;
-  gap: 8px;
-  font-size: 18px;
-  border: none;
 }

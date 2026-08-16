@@ -26,8 +26,8 @@ main {
     }
 
     .illustration {
-      position: relative; // Bezugsrahmen für die Badges
-      align-self: center; // Bild mittig, Rest linksbündig
+      position: relative;
+      align-self: center;
 
       picture img {
         display: block;
@@ -36,31 +36,20 @@ main {
       }
 
       .badge {
-        display: none; // Badges nur im Desktop-Layout
+        display: none;
       }
     }
 
     p {
-      font-family: mulish;
+      font-family: var(--font-body);
       font-size: 18px;
-      color: #fff;
       font-weight: 600;
+      color: #fff;
     }
   }
 
   button {
-    display: flex;
-    gap: 10px;
     align-self: center;
-    padding: 12px 16px;
-    font-family: var(--font-button);
-    font-size: 18px;
-    font-weight: 700;
-    background-color: var(--primary-orange);
-    color: var(--bg-primary);
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
   }
 }
 
@@ -74,7 +63,7 @@ main {
     row-gap: 24px;
 
     > div {
-      display: contents; // h1, Illustration, p werden direkte Grid-Items
+      display: contents;
     }
 
     h1 {
@@ -93,7 +82,6 @@ main {
     > div > .illustration {
       grid-column: 2;
       grid-row: 1 / 4;
-      align-self: center;
       justify-self: flex-end;
 
       picture img {
@@ -101,8 +89,6 @@ main {
         width: auto;
       }
 
-      // .badge trägt Position + Schwebe-Animation,
-      // das innere img die Skalierung – so kollidieren die transforms nicht
       .badge {
         display: block;
         position: absolute;
@@ -116,7 +102,6 @@ main {
         }
       }
 
-      // Positionen in % der Illustration, damit sie mitskalieren
       .badge--bubble {
         top: 8%;
         left: 15%;
@@ -141,13 +126,10 @@ main {
         width: 19%;
       }
 
-      // Maus über der Illustration: alle Badges wachsen um 10% …
       &:hover .badge img {
         transform: scale(1.1);
       }
 
-      // … und schweben. Zwei Kurven (a/b) im Wechsel, dazu unterschiedliche
-      // Laufzeiten – gleiche Dauer + Delay bliebe sonst dauerhaft im Gleichtakt.
       &:hover .badge--bubble {
         animation: badge-float-a 2.4s ease-in-out infinite;
       }
@@ -164,7 +146,6 @@ main {
         animation: badge-float-a 3.5s ease-in-out 0.3s infinite;
       }
 
-      // Maus direkt auf einem Badge: stärker hervorheben, Schweben stoppt
       .badge:hover {
         animation: none;
         z-index: 1;
@@ -179,18 +160,14 @@ main {
       grid-column: 1;
       grid-row: 3;
       align-self: start;
-      justify-self: start; // linksbündig statt zentriert
-      margin-top: 30px;
-      transition: background-color 0.2s ease-in-out;
-      background-color: var(--secondary-orange);
-
-      // Icon erst beim Hover sichtbar. Der gap wird auf 0 gesetzt und der
-      // Abstand stattdessen über margin-left am Icon geregelt – sonst bliebe
-      // beim eingeklappten Icon eine 10px-Lücke im Padding stehen.
+      justify-self: start;
       gap: 0;
+      margin-top: 30px;
+      background-color: var(--secondary-orange);
+      transition: background-color 0.2s ease-in-out;
 
       img {
-        width: 0; // klappt zusammen, Button umschließt nur den Text
+        width: 0;
         margin-left: 0;
         opacity: 0;
         overflow: hidden;
@@ -206,7 +183,7 @@ main {
 
       &:hover img,
       &:focus-visible img {
-        width: 24px; // natürliche Größe von add_circle_purple.svg
+        width: 24px;
         margin-left: 10px;
         opacity: 1;
       }
@@ -214,7 +191,6 @@ main {
   }
 }
 
-// a: erst hoch, dann nach links – gegen den Uhrzeigersinn
 @keyframes badge-float-a {
   0%,
   100% {
@@ -228,7 +204,6 @@ main {
   }
 }
 
-// b: gespiegelt – erst nach rechts/runter, dann hoch
 @keyframes badge-float-b {
   0%,
   100% {

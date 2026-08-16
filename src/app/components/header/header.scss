@@ -1,11 +1,10 @@
 :host {
   display: flex;
-  align-items: flex-start; // oben ausgerichtet
+  align-items: flex-start;
   width: 100%;
   max-width: 1440px;
-  margin-inline: auto; // gleiche Kontentbegrenzung wie main
-  padding: 48px var(--content-padding-inline) 54px; // seitlich wie der Content
-  // kein eigener Hintergrund – die Seite dahinter bestimmt die Farbe
+  margin-inline: auto;
+  padding: 48px var(--content-padding-inline) 54px;
 
   @media (min-width: 768px) {
     padding-block: 54px;
@@ -18,30 +17,26 @@ header {
   justify-content: space-between;
 
   a {
-    display: inline-flex; // damit der Link nur so groß wie das Logo ist
+    display: inline-flex;
   }
 
   img {
     display: block;
-    height: 46px; // Logo-Höhe nach Bedarf
+    height: 46px;
     width: auto;
   }
 
   button {
     display: none;
-    border: none;
-    border-radius: 10px;
-    background-color: var(--secondary-orange);
-    font-size: 18px;
     padding: 10px 16px;
-    cursor: pointer;
+    background-color: var(--secondary-orange);
 
     &:hover {
       background-color: var(--primary-orange);
     }
 
-    @media(min-width: 1024px) {
-      display: block;
+    @media (min-width: 1024px) {
+      display: inline-flex;
     }
   }
 }

@@ -9,7 +9,7 @@
 @font-face {
     font-family: mulish;
     src: url('/assets/fonts/Mulish/Mulish-VariableFont_wght.ttf') format('truetype');
-    font-weight: 300 900;   // variable Font: gesamter Gewichts-Bereich
+    font-weight: 300 900;
     font-style: normal;
     font-display: swap;
 }
@@ -17,14 +17,44 @@
 @font-face {
     font-family: nokora;
     src: url('/assets/fonts/Nokora/Nokora-VariableFont_wght.ttf') format('truetype');
-    font-weight: 300 900;   // variable Font: gesamter Gewichts-Bereich
+    font-weight: 300 900;
     font-style: normal;
     font-display: swap;
+}
+
+:root {
+    --bg-primary: #35273a;
+    --bg-secondary: #8e70991a;
+    --primary-orange: #ffb770;
+    --secondary-orange: #ffcfa1;
+    --primary-purple: var(--bg-primary);
+    --secondary-purple: #221227;
+    --font-heading: nerko_one;
+    --font-body: mulish;
+    --font-button: nokora;
+    --content-padding-inline: 16px;
+    --content-gap: 16px;
+}
+
+@media (min-width: 768px) {
+    :root {
+        --content-padding-inline: 48px;
+        --content-gap: 32px;
+    }
+}
+
+@media (min-width: 1200px) {
+    :root {
+        --content-padding-inline: 128px;
+    }
 }
 
 * {
     margin: 0;
     box-sizing: border-box;
+}
+
+html {
     scroll-behavior: smooth;
 }
 
@@ -39,8 +69,6 @@ body {
     background-color: var(--bg-primary);
 }
 
-// globale Kontentbegrenzung: Inhalt max. 1440px breit und zentriert,
-// seitlicher Abstand kommt aus --content-padding-inline (wie im Header)
 main {
     width: 100%;
     max-width: 1440px;
@@ -48,31 +76,24 @@ main {
     padding-inline: var(--content-padding-inline);
 }
 
-:root {
-    --bg-primary: #35273A;
-    --bg-secondary: #8E70991A;
-    --primary-orange: #FFB770;
-    --secondary-orange: #FFCFA1;
-    --primary-purple: #35273A;
-    --secondary-purple: #221227;
-    --font-heading: nerko_one;
-    --font-body: mulish;
-    --font-button: nokora;
-    --content-padding-inline: 16px; // seitlicher Abstand für Header und Content
-    --content-gap: 16px;
-    margin: 0;
+button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: none;
+    border-radius: 10px;
+    font-family: var(--font-button);
+    font-size: 18px;
+    cursor: pointer;
 }
 
-// seitlicher Abstand wächst stufenweise mit der Viewport-Breite mit
-@media (min-width: 768px) {
-    :root {
-        --content-padding-inline: 48px;
-        --content-gap: 32px;
-    }
-}
+.btn-primary {
+    padding: 12px 16px;
+    background-color: var(--primary-orange);
+    color: var(--bg-primary);
+    font-weight: 700;
 
-@media (min-width: 1200px) {
-    :root {
-        --content-padding-inline: 128px;
+    &:hover {
+        background-color: var(--secondary-orange);
     }
 }
