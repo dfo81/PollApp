@@ -103,11 +103,16 @@ main {
     padding-right: 12px;
   }
 
-  .info-frame {
+  .info-frame,
+  .description-frame {
     display: flex;
     flex-direction: column;
     width: 100%;
     gap: 4px;
+  }
+
+  .description-frame {
+    margin-top: 4px;
   }
 
   .drop-down {
@@ -133,6 +138,25 @@ main {
   color: white;
   font-size: 16px;
 }
+
+  // Desktop: zwei Spalten. Die Auto-Platzierung des Grids verteilt die Kinder
+  // reihenweise – info-frame links, description rechts, danach Frage 1 links,
+  // Frage 2 rechts, Frage 3 wieder links usw. (jeweils mit ihren Answers).
+  @media (min-width: 1024px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 40px;
+    align-items: start;
+    padding: 40px 24px;
+
+    .description-frame {
+      margin-top: 0;
+    }
+
+    > .add-question {
+      grid-column: 1 / -1;
+    }
+  }
 }
 
 .qna-box {
