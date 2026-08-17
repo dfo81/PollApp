@@ -1,50 +1,59 @@
 <main>
   <h1>Your surveys</h1>
-  <div class="carousell">
-    <span>Ending soon surveys</span>
-    <div class="cards">
-      <div class="card" [routerLink]="['/survey', 1]">
-        <div class="description">
-          <h5>Health</h5>
-          <h3>Fit & Wellness survey!</h3>
-        </div>
-        <span class="label">Ends in 2 Days</span>
-      </div>
-      <div class="card" [routerLink]="['/survey', 2]">
-        <div class="description">
-          <h5>Health</h5>
-          <h3>Fit & Wellness survey!</h3>
-        </div>
-        <span class="label">Ends in 2 Days</span>
-      </div>
-      <div class="card" [routerLink]="['/survey', 2]">
-        <div class="description">
-          <h5>Health</h5>
-          <h3>Fit & Wellness survey!</h3>
-        </div>
-        <span class="label">Ends in 2 Days</span>
+
+  @if (surveys.error()) {
+    <p class="state error">Die Umfragen konnten nicht geladen werden.</p>
+  } @else if (surveys.isLoading()) {
+    <p class="state">Umfragen werden geladen …</p>
+  } @else {
+    <div class="carousell">
+      <span>Ending soon surveys</span>
+      <div class="cards">
+        @for (survey of endingSoon(); track survey.id) {
+          <div class="card" [routerLink]="['/survey', survey.id]">
+            <div class="description">
+              <h5>{{ survey.category }}</h5>
+              <h3>{{ survey.title }}</h3>
+            </div>
+            <span class="label">{{ label(survey) }}</span>
+          </div>
+        } @empty {
+          <p class="state">Zurzeit endet keine Umfrage demnächst.</p>
+        }
       </div>
     </div>
-  </div>
-  <div class="buttons">
-    <button class="left">Active survey</button>
-    <button class="right">Past survey</button>
-  </div>
-  <div class="survey-sort-box">
-    <div class="sort">
-      <span>Sort by categories</span>
-      <img src="assets/icons/arrow_drop_down_white.svg" alt="" />
+
+    <div class="buttons">
+      <button class="left" [class.inactive]="tab() !== 'active'" (click)="selectTab('active')">
+        Active survey
+      </button>
+      <button class="right" [class.inactive]="tab() !== 'past'" (click)="selectTab('past')">
+        Past survey
+      </button>
     </div>
-    <div class="other">
-      <div class="survey" [routerLink]="['/survey', 3]">
-        <span class="title">Team activities</span>
+
+    <div class="survey-sort-box">
+      <div class="sort">
+        <span>Sort by categories</span>
+        <img src="assets/icons/arrow_drop_down_white.svg" alt="" />
       </div>
-      <div class="survey" [routerLink]="['/survey', 3]">
-        <span class="title">Team activities</span>
-      </div>
-      <div class="survey" [routerLink]="['/survey', 3]">
-        <span class="title">Team activities</span>
+      <div class="other">
+        @for (survey of listed(); track survey.id) {
+          <div class="survey" [routerLink]="['/survey', survey.id]">
+            <span class="category">{{ survey.category }}</span>
+            <span class="title">{{ survey.title }}</span>
+            <span class="deadline">{{ label(survey) }}</span>
+          </div>
+        } @empty {
+          <p class="state">
+            @if (tab() === 'active') {
+              Es laufen gerade keine Umfragen.
+            } @else {
+              Es gibt noch keine abgeschlossenen Umfragen.
+            }
+          </p>
+        }
       </div>
     </div>
-  </div>
+  }
 </main>

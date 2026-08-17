@@ -1,4 +1,4 @@
-<main>
+<div class="create-survey">
   <div class="frame">
     <div class="header">
       <div class="title">
@@ -6,8 +6,10 @@
         <h2>Create new survey</h2>
       </div>
       <div class="buttons">
-        <img class="exit" src="assets/icons/exit_dark.svg" alt="Cancel" />
-        <button class="cancel">Cancel <img src="assets/icons/close.svg" alt="" /></button>
+        <img class="exit" src="assets/icons/exit_dark.svg" alt="Cancel" (click)="closed.emit()" />
+        <button class="cancel" type="button" (click)="closed.emit()">
+          Cancel <img src="assets/icons/close.svg" alt="" />
+        </button>
       </div>
     </div>
     <div class="input-fields">
@@ -98,4 +100,4 @@
     </div>
     <button class="publish btn-primary">Publish <img src="assets/icons/check_checked_purple.svg" alt="" /></button>
   </div>
-</main>
+</div>

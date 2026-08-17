@@ -1,7 +1,11 @@
 $button-soft: #ffb7704d;
 $button-soft-hover: #ffb77099;
 
-main {
+:host {
+  display: block;
+}
+
+.create-survey {
   display: flex;
   flex-direction: column;
   gap: 54px;

@@ -53,6 +53,23 @@ main {
   }
 }
 
+.create-dialog {
+  width: 100%;
+  max-width: 1440px;
+  max-height: 100dvh;
+  margin: auto;
+  padding: 40px var(--content-padding-inline);
+  border: none;
+  background-color: transparent;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  &::backdrop {
+    background-color: rgba(34, 18, 39, 0.75);
+    backdrop-filter: blur(2px);
+  }
+}
+
 @media (min-width: 768px) {
   main {
     display: grid;

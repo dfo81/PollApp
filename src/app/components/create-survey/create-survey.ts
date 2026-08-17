@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, output } from '@angular/core';
 
 @Component({
   selector: 'app-create-survey',
@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './create-survey.scss',
 })
 export class CreateSurvey {
-
+  readonly closed = output<void>();
 }
