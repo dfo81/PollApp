@@ -19,9 +19,35 @@
           <img src="assets/icons/delete.svg" alt="" />
         </div>
         <input type="text" />
-        <div class="drop-down">
-          <span>Choose category</span>
-          <img src="assets/icons/arrow_drop_down_white.svg" alt="" />
+        <div class="drop-down" #categoryField>
+          <button
+            class="drop-down-toggle"
+            type="button"
+            aria-haspopup="listbox"
+            [attr.aria-expanded]="categoryOpen()"
+            (click)="toggleCategory()"
+          >
+            <span>{{ category() ?? 'Choose category' }}</span>
+            <img src="assets/icons/arrow_drop_down_white.svg" alt="" />
+          </button>
+
+          @if (categoryOpen()) {
+            <ul class="drop-down-menu" role="listbox">
+              @for (name of categories; track name) {
+                <li>
+                  <button
+                    type="button"
+                    role="option"
+                    [attr.aria-selected]="category() === name"
+                    [class.selected]="category() === name"
+                    (click)="selectCategory(name)"
+                  >
+                    {{ name }}
+                  </button>
+                </li>
+              }
+            </ul>
+          }
         </div>
         <div class="date input-title">
           <span><b>Set and date</b> (optional)</span>
@@ -49,8 +75,11 @@
             <span>Allow multiple answers.</span>
           </div>
         </div>
-        <div class="answer"><span>A.</span><img src="assets/icons/delete.svg" alt="" /></div>
-        <input type="text" />
+        <div class="answer">
+          <span>A.</span>
+          <input type="text" />
+          <img src="assets/icons/delete.svg" alt="" />
+        </div>
         <div class="add-button">
           <span>Add answer</span>
           <img src="assets/icons/add_circle_white.svg" alt="" />
@@ -69,8 +98,11 @@
             <span>Allow multiple answers.</span>
           </div>
         </div>
-        <div class="answer"><span>A.</span><img src="assets/icons/delete.svg" alt="" /></div>
-        <input type="text" />
+        <div class="answer">
+          <span>A.</span>
+          <input type="text" />
+          <img src="assets/icons/delete.svg" alt="" />
+        </div>
         <div class="add-button">
           <span>Add answer</span>
           <img src="assets/icons/add_circle_white.svg" alt="" />
@@ -89,8 +121,11 @@
             <span>Allow multiple answers.</span>
           </div>
         </div>
-        <div class="answer"><span>A.</span><img src="assets/icons/delete.svg" alt="" /></div>
-        <input type="text" />
+        <div class="answer">
+          <span>A.</span>
+          <input type="text" />
+          <img src="assets/icons/delete.svg" alt="" />
+        </div>
         <div class="add-button">
           <span>Add answer</span>
           <img src="assets/icons/add_circle_white.svg" alt="" />

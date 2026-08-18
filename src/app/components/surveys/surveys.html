@@ -2,9 +2,9 @@
   <h1>Your surveys</h1>
 
   @if (surveys.error()) {
-    <p class="state error">Die Umfragen konnten nicht geladen werden.</p>
+    <p class="state error">Surveys could not be loaded.</p>
   } @else if (surveys.isLoading()) {
-    <p class="state">Umfragen werden geladen …</p>
+    <p class="state">Loading surveys …</p>
   } @else {
     <div class="carousell">
       <span>Ending soon surveys</span>
@@ -18,38 +18,87 @@
             <span class="label">{{ label(survey) }}</span>
           </div>
         } @empty {
-          <p class="state">Zurzeit endet keine Umfrage demnächst.</p>
+          <p class="state">No surveys are ending soon.</p>
         }
       </div>
     </div>
 
-    <div class="buttons">
-      <button class="left" [class.inactive]="tab() !== 'active'" (click)="selectTab('active')">
-        Active survey
-      </button>
-      <button class="right" [class.inactive]="tab() !== 'past'" (click)="selectTab('past')">
-        Past survey
-      </button>
-    </div>
-
     <div class="survey-sort-box">
-      <div class="sort">
-        <span>Sort by categories</span>
-        <img src="assets/icons/arrow_drop_down_white.svg" alt="" />
+      <div class="list-controls">
+        <div class="buttons">
+          <button class="left" [class.inactive]="tab() !== 'active'" (click)="selectTab('active')">
+            Active survey
+          </button>
+          <button class="right" [class.inactive]="tab() !== 'past'" (click)="selectTab('past')">
+            Past survey
+          </button>
+        </div>
+        <div class="category-filter" #categoryFilter>
+          <div class="sort-anchor">
+            <button
+              class="sort"
+              type="button"
+              aria-haspopup="listbox"
+              [class.has-selection]="category() !== null"
+              [attr.aria-expanded]="dropdownOpen()"
+              (click)="toggleDropdown()"
+            >
+              <span>Sort by categories</span>
+              <img src="assets/icons/arrow_drop_down_white.svg" alt="" />
+            </button>
+
+            @if (dropdownOpen()) {
+              <ul class="sort-menu" role="listbox">
+                <li>
+                  <button
+                    type="button"
+                    role="option"
+                    [attr.aria-selected]="category() === null"
+                    [class.selected]="category() === null"
+                    (click)="selectCategory(null)"
+                  >
+                    {{ allLabel }}
+                  </button>
+                </li>
+                @for (name of categories; track name) {
+                  <li>
+                    <button
+                      type="button"
+                      role="option"
+                      [attr.aria-selected]="category() === name"
+                      [class.selected]="category() === name"
+                      (click)="selectCategory(name)"
+                    >
+                      {{ name }}
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+
+          @if (category(); as active) {
+            <span class="chosen">{{ active }}</span>
+          }
+        </div>
       </div>
       <div class="other">
         @for (survey of listed(); track survey.id) {
           <div class="survey" [routerLink]="['/survey', survey.id]">
-            <span class="category">{{ survey.category }}</span>
-            <span class="title">{{ survey.title }}</span>
+            <div class="title-box">
+              <span class="category">{{ survey.category }}</span>
+              <span class="title">{{ survey.title }}</span>
+            </div>
             <span class="deadline">{{ label(survey) }}</span>
           </div>
         } @empty {
           <p class="state">
-            @if (tab() === 'active') {
-              Es laufen gerade keine Umfragen.
+            @if (category() !== null) {
+              No surveys in “{{ category() }}”.
+            } @else if (tab() === 'active') {
+              There are no active surveys right now.
             } @else {
-              Es gibt noch keine abgeschlossenen Umfragen.
+              There are no past surveys yet.
             }
           </p>
         }

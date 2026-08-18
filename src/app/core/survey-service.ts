@@ -13,7 +13,7 @@ export class SurveyService {
       .order('ends_at', { ascending: true, nullsFirst: false });
 
     if (error) {
-      throw new Error(`Umfragen konnten nicht geladen werden: ${error.message}`);
+      throw new Error(`Surveys could not be loaded: ${error.message}`);
     }
 
     return data.map((row) => ({

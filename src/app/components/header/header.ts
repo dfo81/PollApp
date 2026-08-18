@@ -7,8 +7,8 @@ import { Component, input } from '@angular/core';
   styleUrl: './header.scss',
 })
 export class Header {
-  // true  = helle Seite  -> dunkles Logo
-  // false = dunkle Seite -> helles Logo
+  // true  = light page -> dark logo
+  // false = dark page  -> light logo
   readonly light = input(false);
 
   // "Create survey"-Button anzeigen (nur auf Survey-Seiten, ab Desktop)

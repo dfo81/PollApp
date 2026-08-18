@@ -100,45 +100,130 @@ main {
     }
   }
 
-  .buttons {
+  .list-controls {
     display: flex;
-    gap: 16px;
+    flex-direction: column;
+    gap: 48px;
 
-    .left,
-    .right {
-      padding: 2px 10px;
-      border-radius: 20px;
-      font-size: 14px;
-      background-color: var(--primary-orange);
+    .buttons {
+      display: flex;
+      gap: 16px;
 
-      &.inactive {
-        background-color: #fee9d4;
-      }
-    }
-  }
+      .left,
+      .right {
+        padding: 2px 10px;
+        border-radius: 20px;
+        font-size: 14px;
+        background-color: var(--primary-orange);
 
-  .sort {
-    display: flex;
-    align-items: center;
-    align-self: flex-start;
-    gap: 9px;
-    padding: 4px 6px;
-    border-radius: 6px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: $surface-subtle;
-
-      img {
-        content: url(/assets/icons/arrow_drop_down_orange.svg);
+        &.inactive {
+          background-color: #fee9d4;
+        }
       }
     }
 
-    span {
-      font-family: var(--font-body);
-      font-size: 18px;
-      font-weight: 700;
-      color: #fff;
+    .category-filter {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-self: flex-start;
+
+      .sort-anchor {
+        position: relative;
+      }
+
+      .chosen {
+        font-family: var(--font-body);
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--primary-orange);
+      }
+
+      .sort {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 4px 6px;
+        background-color: transparent;
+        border-radius: 6px;
+
+        img {
+          transition: transform 0.2s ease;
+        }
+
+        &:hover,
+        &.has-selection,
+        &[aria-expanded='true'] {
+          background-color: $surface-subtle;
+
+          img {
+            content: url(/assets/icons/arrow_drop_down_orange.svg);
+          }
+        }
+
+        &[aria-expanded='true'] img {
+          transform: rotate(180deg);
+        }
+
+        span {
+          font-family: var(--font-body);
+          font-size: 18px;
+          font-weight: 700;
+          color: #fff;
+        }
+      }
+
+      .sort-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 10;
+        min-width: 100%;
+        margin: 0;
+        padding: 6px;
+        list-style: none;
+        background-color: #faf5fe;
+        border-radius: 6px;
+        box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.4);
+
+        button {
+          justify-content: flex-start;
+          width: 100%;
+          padding: 6px 10px;
+          background-color: transparent;
+          border-radius: 4px;
+          font-family: var(--font-body);
+          font-size: 16px;
+          font-weight: 500;
+          color: var(--bg-primary);
+          white-space: nowrap;
+
+          &:hover {
+            background-color: #f4e9fb;
+          }
+
+          &.selected {
+            background-color: #f4e9fb;
+            font-weight: 700;
+          }
+        }
+      }
+    }
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+
+      .category-filter {
+        align-self: center;
+
+        .sort-menu {
+          left: auto;
+          right: 0;
+        }
+      }
     }
   }
 
@@ -160,8 +245,7 @@ main {
       .survey {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-        height: 147px;
+        gap: 24px;
         max-width: 513px;
         padding: 12px 16px;
         background-color: $surface;
@@ -175,26 +259,32 @@ main {
           background-color: $surface-hover;
         }
 
-        .category {
-          font-size: 14px;
-          font-weight: 600;
-          color: #fff;
-        }
+        .title-box {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
 
-        .title {
-          font-size: 20px;
-          font-weight: 500;
-          color: var(--secondary-orange);
+          .category {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--secondary-orange);
+          }
+
+          .title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+          }
         }
 
         .deadline {
-          margin-right: auto;
-          padding: 3px 6px;
-          background-color: var(--secondary-orange);
-          border-radius: 0 14px 0 0;
-          font-size: 12px;
-          color: var(--bg-primary);
-        }
+            margin-left: auto;
+            padding: 3px 6px;
+            background-color: var(--secondary-orange);
+            border-radius: 0 14px 0 0;
+            font-size: 12px;
+            color: var(--bg-primary);
+          }
       }
     }
   }

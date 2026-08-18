@@ -9,6 +9,6 @@ import { SurveyResults } from '../survey-results/survey-results';
   styleUrl: './survey-view.scss',
 })
 export class SurveyView {
-  // gebunden an die Route survey/:id via withComponentInputBinding()
+  // bound to the survey/:id route via withComponentInputBinding()
   readonly id = input<string>();
 }

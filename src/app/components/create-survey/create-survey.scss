@@ -101,8 +101,7 @@ $button-soft-hover: #ffb77099;
   color: #fff;
 
   .input-title,
-  .answer-title,
-  .answer {
+  .answer-title {
     display: flex;
     justify-content: space-between;
   }
@@ -138,9 +137,55 @@ $button-soft-hover: #ffb77099;
   }
 
   .drop-down {
-    display: flex;
-    gap: 12px;
-    padding-bottom: 32px;
+    position: relative;
+    margin-bottom: 32px;
+
+    .drop-down-toggle {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0;
+      background-color: transparent;
+      font-family: var(--font-body);
+      font-size: 18px;
+      color: #fff;
+    }
+
+    .drop-down-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      z-index: 10;
+      min-width: 100%;
+      margin: 0;
+      padding: 6px;
+      list-style: none;
+      background-color: #faf5fe;
+      border-radius: 6px;
+      box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.4);
+
+      button {
+        justify-content: flex-start;
+        width: 100%;
+        padding: 6px 10px;
+        background-color: transparent;
+        border-radius: 4px;
+        font-family: var(--font-body);
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--bg-primary);
+        white-space: nowrap;
+
+        &:hover {
+          background-color: #f4e9fb;
+        }
+
+        &.selected {
+          background-color: #f4e9fb;
+          font-weight: 700;
+        }
+      }
+    }
   }
 
   .qna-box {
@@ -148,6 +193,19 @@ $button-soft-hover: #ffb77099;
     flex-direction: column;
     margin-top: 24px;
     gap: 6px;
+
+    .answer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+
+      input {
+        flex: 1;
+        min-width: 0;
+        margin-bottom: 0;
+      }
+    }
 
     .answers-checkbox {
       display: flex;

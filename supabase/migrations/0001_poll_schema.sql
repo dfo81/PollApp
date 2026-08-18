@@ -1,5 +1,5 @@
--- Poll-App: Schema, RLS-Policies, Realtime und Testdaten
--- Ausfuehren im Supabase SQL Editor.
+-- Poll app: schema, RLS policies, realtime and seed data.
+-- Run this in the Supabase SQL editor.
 
 create table if not exists surveys (
   id          uuid primary key default gen_random_uuid(),
@@ -41,18 +41,18 @@ alter table questions enable row level security;
 alter table options   enable row level security;
 alter table votes     enable row level security;
 
--- Lesen: fuer alle offen, die App hat keinen Login.
+-- Read: open to everyone, the app has no login.
 create policy "read surveys"   on surveys   for select to anon using (true);
 create policy "read questions" on questions for select to anon using (true);
 create policy "read options"   on options   for select to anon using (true);
 create policy "read votes"     on votes     for select to anon using (true);
 
--- Anlegen: jeder darf Umfragen erstellen.
+-- Create: anyone may create surveys.
 create policy "create surveys"   on surveys   for insert to anon with check (true);
 create policy "create questions" on questions for insert to anon with check (true);
 create policy "create options"   on options   for insert to anon with check (true);
 
--- Abstimmen: nur solange die Umfrage laeuft.
+-- Vote: only while the survey is still running.
 create policy "vote on running surveys" on votes for insert to anon with check (
   exists (
     select 1
@@ -64,7 +64,7 @@ create policy "vote on running surveys" on votes for insert to anon with check (
   )
 );
 
--- Kein update/delete fuer anon: ohne Policy ist beides gesperrt.
+-- No update/delete for anon: without a policy both are denied.
 
 alter publication supabase_realtime add table votes;
 

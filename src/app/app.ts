@@ -17,12 +17,12 @@ export class App {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  // feuert bei jeder abgeschlossenen Navigation neu
+  // re-emits after every completed navigation
   private readonly navEnd = toSignal(
     this.router.events.pipe(filter((e) => e instanceof NavigationEnd)),
   );
 
-  // Data der aktuell aktiven (tiefsten) Route
+  // data of the currently active (deepest) route
   private readonly routeData = computed(() => {
     this.navEnd();
     let route = this.route;
@@ -32,7 +32,7 @@ export class App {
     return route.snapshot.data;
   });
 
-  // helle Seite (weißer Hintergrund + dunkles Logo), gesteuert über Route-Data { light: true }
+  // light page (white background + dark logo), driven by route data { light: true }
   protected readonly light = computed(() => this.routeData()['light'] ?? false);
 
   // "Create survey"-Button nur auf Survey-Seiten, gesteuert über Route-Data { createButton: true }
