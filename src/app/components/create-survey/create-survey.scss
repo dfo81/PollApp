@@ -220,6 +220,10 @@ $button-soft-hover: #ffb77099;
     margin-top: 24px;
     gap: 6px;
 
+    .delete-icon {
+      cursor: pointer;
+    }
+
     .answer {
       display: flex;
       align-items: center;
@@ -250,7 +254,12 @@ $button-soft-hover: #ffb77099;
     gap: 4px;
     margin: 12px auto 72px 12px;
     padding: 8px 12px;
+    // The global button reset adds a rounded corner and a default background.
+    background-color: transparent;
+    border-radius: 0;
     border-bottom: 1px solid #fff;
+    color: #fff;
+    font-size: 16px;
     cursor: pointer;
 
     &:hover {
