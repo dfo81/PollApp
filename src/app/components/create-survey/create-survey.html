@@ -14,53 +14,57 @@
     </div>
     <div class="input-fields">
       <div class="info-frame">
-        <div class="name input-title">
-          <span><b>Survey name</b></span>
-          <img src="assets/icons/delete.svg" alt="" />
+        <div class="field">
+          <span class="field-label"><b>Survey name</b></span>
+          <img class="field-delete" src="assets/icons/delete.svg" alt="" />
+          <input type="text" />
         </div>
-        <input type="text" />
-        <div class="drop-down" #categoryField>
-          <button
-            class="drop-down-toggle"
-            type="button"
-            aria-haspopup="listbox"
-            [attr.aria-expanded]="categoryOpen()"
-            (click)="toggleCategory()"
-          >
-            <span>{{ category() ?? 'Choose category' }}</span>
-            <img src="assets/icons/arrow_drop_down_white.svg" alt="" />
-          </button>
 
-          @if (categoryOpen()) {
-            <ul class="drop-down-menu" role="listbox">
-              @for (name of categories; track name) {
-                <li>
-                  <button
-                    type="button"
-                    role="option"
-                    [attr.aria-selected]="category() === name"
-                    [class.selected]="category() === name"
-                    (click)="selectCategory(name)"
-                  >
-                    {{ name }}
-                  </button>
-                </li>
+        <div class="date-category-row">
+          <div class="field date-field">
+            <span class="field-label"><b>Set end date</b> (optional)</span>
+            <img class="field-delete" src="assets/icons/delete.svg" alt="" />
+            <input type="text" />
+          </div>
+
+            <div class="drop-down" #categoryField>
+              <button
+                class="drop-down-toggle"
+                type="button"
+                aria-haspopup="listbox"
+                [attr.aria-expanded]="categoryOpen()"
+                (click)="toggleCategory()"
+              >
+                <span>{{ category() ?? 'Choose category' }}</span>
+                <img src="assets/icons/arrow_drop_down_white.svg" alt="" />
+              </button>
+
+              @if (categoryOpen()) {
+                <ul class="dropdown-menu" role="listbox">
+                  @for (name of categories; track name) {
+                    <li>
+                      <button
+                        type="button"
+                        role="option"
+                        [attr.aria-selected]="category() === name"
+                        [class.selected]="category() === name"
+                        (click)="selectCategory(name)"
+                      >
+                        {{ name }}
+                      </button>
+                    </li>
+                  }
+                </ul>
               }
-            </ul>
-          }
+            </div>
         </div>
-        <div class="date input-title">
-          <span><b>Set and date</b> (optional)</span>
-          <img src="assets/icons/delete.svg" alt="" />
-        </div>
-        <input type="text" />
       </div>
       <div class="description-frame">
-        <div class="description input-title">
-          <span><b>Description text</b> (optional)</span>
-          <img src="assets/icons/delete.svg" alt="" />
+        <div class="field">
+          <span class="field-label"><b>Describing text</b> (optional)</span>
+          <img class="field-delete" src="assets/icons/delete.svg" alt="" />
+          <textarea name="" id=""></textarea>
         </div>
-        <textarea name="" id=""></textarea>
       </div>
       <div class="qna-box">
         <div class="question input-title">
@@ -80,49 +84,8 @@
           <input type="text" />
           <img src="assets/icons/delete.svg" alt="" />
         </div>
-        <div class="add-button">
-          <span>Add answer</span>
-          <img src="assets/icons/add_circle_white.svg" alt="" />
-        </div>
-      </div>
-      <div class="qna-box">
-        <div class="question input-title">
-          <span><b>2. Question</b></span>
-          <img src="assets/icons/delete.svg" alt="" />
-        </div>
-        <input type="text" placeholder="Which date would work best for you?" />
-        <div class="answer-title">
-          <span>Answers</span>
-          <div class="answers-checkbox">
-            <img src="assets/icons/checkbox_default_white.svg" alt="" />
-            <span>Allow multiple answers.</span>
-          </div>
-        </div>
         <div class="answer">
-          <span>A.</span>
-          <input type="text" />
-          <img src="assets/icons/delete.svg" alt="" />
-        </div>
-        <div class="add-button">
-          <span>Add answer</span>
-          <img src="assets/icons/add_circle_white.svg" alt="" />
-        </div>
-      </div>
-      <div class="qna-box">
-        <div class="question input-title">
-          <span><b>3. Question</b></span>
-          <img src="assets/icons/delete.svg" alt="" />
-        </div>
-        <input type="text" placeholder="Which date would work best for you?" />
-        <div class="answer-title">
-          <span>Answers</span>
-          <div class="answers-checkbox">
-            <img src="assets/icons/checkbox_default_white.svg" alt="" />
-            <span>Allow multiple answers.</span>
-          </div>
-        </div>
-        <div class="answer">
-          <span>A.</span>
+          <span>B.</span>
           <input type="text" />
           <img src="assets/icons/delete.svg" alt="" />
         </div>

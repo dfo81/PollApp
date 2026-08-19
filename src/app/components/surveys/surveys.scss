@@ -55,7 +55,7 @@ main {
         width: 250px;
         height: 233px;
         padding: 24px 16px;
-        background-color: #faf5fe;
+        background-color: var(--surface-light);
         border-radius: 0 80px 0 0;
         cursor: pointer;
 
@@ -65,7 +65,7 @@ main {
         }
 
         &:hover {
-          background-color: #f4e9fb;
+          background-color: var(--surface-light-hover);
         }
 
         .description {
@@ -113,11 +113,15 @@ main {
       .right {
         padding: 2px 10px;
         border-radius: 20px;
-        font-size: 14px;
+        font-size: 16px;
         background-color: var(--primary-orange);
 
         &.inactive {
           background-color: #fee9d4;
+
+          &:hover {
+            background-color: var(--secondary-orange);
+          }
         }
       }
     }
@@ -133,17 +137,18 @@ main {
       }
 
       .chosen {
+        padding-left: 10px;
         font-family: var(--font-body);
-        font-size: 18px;
-        font-weight: 700;
+        font-size: 14px;
+        font-weight: 400;
         color: var(--primary-orange);
       }
 
       .sort {
         display: flex;
         align-items: center;
-        gap: 9px;
-        padding: 4px 6px;
+        gap: 4px;
+        padding: 4px 6px 4px 10px;
         background-color: transparent;
         border-radius: 6px;
 
@@ -170,42 +175,6 @@ main {
           font-size: 18px;
           font-weight: 700;
           color: #fff;
-        }
-      }
-
-      .sort-menu {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        z-index: 10;
-        min-width: 100%;
-        margin: 0;
-        padding: 6px;
-        list-style: none;
-        background-color: #faf5fe;
-        border-radius: 6px;
-        box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.4);
-
-        button {
-          justify-content: flex-start;
-          width: 100%;
-          padding: 6px 10px;
-          background-color: transparent;
-          border-radius: 4px;
-          font-family: var(--font-body);
-          font-size: 16px;
-          font-weight: 500;
-          color: var(--bg-primary);
-          white-space: nowrap;
-
-          &:hover {
-            background-color: #f4e9fb;
-          }
-
-          &.selected {
-            background-color: #f4e9fb;
-            font-weight: 700;
-          }
         }
       }
     }

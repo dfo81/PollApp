@@ -87,7 +87,7 @@ $button-soft-hover: #ffb77099;
   }
 
   .publish {
-    margin: auto;
+    margin-left: auto;
   }
 }
 
@@ -114,15 +114,77 @@ $button-soft-hover: #ffb77099;
 
   input {
     height: 37px;
-    margin-bottom: 10px;
   }
 
   textarea {
     height: 108px;
+    resize: vertical;
   }
 
-  img {
-    padding-right: 12px;
+  // Mobile: delete icon sits in the label row, input spans the full width.
+  // Desktop: the icon moves down next to the input, as in the mockup.
+  .field {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 8px;
+    row-gap: 4px;
+    margin-bottom: 10px;
+
+    .field-label {
+      grid-column: 1;
+      grid-row: 1;
+      align-self: center;
+    }
+
+    .field-delete {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: end;
+      align-self: center;
+      padding: 0;
+    }
+
+    input,
+    textarea {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+
+    @media (min-width: 1024px) {
+      .field-delete {
+        grid-row: 2;
+      }
+
+      input,
+      textarea {
+        grid-column: 1;
+      }
+    }
+  }
+
+  .date-category-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .drop-down {
+      order: -1;
+    }
+
+    @media (min-width: 1024px) {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 24px;
+
+      .drop-down {
+        order: 0;
+      }
+
+      .date-field {
+        flex: 1;
+        min-width: 0;
+      }
+    }
   }
 
   .info-frame,
@@ -138,7 +200,7 @@ $button-soft-hover: #ffb77099;
 
   .drop-down {
     position: relative;
-    margin-bottom: 32px;
+    margin-bottom: 12px;
 
     .drop-down-toggle {
       display: flex;
@@ -149,42 +211,6 @@ $button-soft-hover: #ffb77099;
       font-family: var(--font-body);
       font-size: 18px;
       color: #fff;
-    }
-
-    .drop-down-menu {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      z-index: 10;
-      min-width: 100%;
-      margin: 0;
-      padding: 6px;
-      list-style: none;
-      background-color: #faf5fe;
-      border-radius: 6px;
-      box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.4);
-
-      button {
-        justify-content: flex-start;
-        width: 100%;
-        padding: 6px 10px;
-        background-color: transparent;
-        border-radius: 4px;
-        font-family: var(--font-body);
-        font-size: 16px;
-        font-weight: 500;
-        color: var(--bg-primary);
-        white-space: nowrap;
-
-        &:hover {
-          background-color: #f4e9fb;
-        }
-
-        &.selected {
-          background-color: #f4e9fb;
-          font-weight: 700;
-        }
-      }
     }
   }
 
@@ -221,9 +247,9 @@ $button-soft-hover: #ffb77099;
   .add-button {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     margin: 12px auto 72px 12px;
-    padding: 8px 0 8px 12px;
+    padding: 8px 12px;
     border-bottom: 1px solid #fff;
     cursor: pointer;
 
@@ -235,9 +261,10 @@ $button-soft-hover: #ffb77099;
   .add-question {
     margin-left: 12px;
     margin-right: auto;
-    padding: 8px 0 8px 12px;
+    padding: 8px 12px;
     background-color: $button-soft;
     font-size: 16px;
+    font-weight: 700;
     color: #fff;
 
     &:hover {

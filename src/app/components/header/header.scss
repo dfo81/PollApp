@@ -29,11 +29,6 @@ header {
   button {
     display: none;
     padding: 10px 16px;
-    background-color: var(--secondary-orange);
-
-    &:hover {
-      background-color: var(--primary-orange);
-    }
 
     @media (min-width: 1024px) {
       display: inline-flex;

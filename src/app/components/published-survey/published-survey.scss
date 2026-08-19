@@ -7,7 +7,7 @@
   .content-survey {
     display: flex;
     flex-direction: column;
-    max-width: 702px;
+    max-width: 900px;
     padding: 40px 15px;
     gap: 40px;
     background-color: var(--bg-secondary);
@@ -72,7 +72,18 @@
     flex-direction: column;
     gap: 40px;
 
-    .questions,
+    .questions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+
+      @media (min-width: 1024px) {
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: 40px;
+        align-items: start;
+      }
+    }
+
     .question-component {
       display: flex;
       flex-direction: column;

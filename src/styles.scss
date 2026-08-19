@@ -29,6 +29,8 @@
     --secondary-orange: #ffcfa1;
     --primary-purple: var(--bg-primary);
     --secondary-purple: #221227;
+    --surface-light: #faf5fe;
+    --surface-light-hover: #f4e9fb;
     --font-heading: nerko_one;
     --font-body: mulish;
     --font-button: nokora;
@@ -89,11 +91,50 @@ button {
 
 .btn-primary {
     padding: 12px 16px;
-    background-color: var(--primary-orange);
-    color: var(--bg-primary);
+    background-color: var(--secondary-orange);
+    color: var(--secondary-purple);
     font-weight: 700;
 
     &:hover {
-        background-color: var(--secondary-orange);
+        background-color: var(--primary-orange);
+    }
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 100%;
+    margin: 0;
+    padding: 8px 4px;
+    list-style: none;
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.4);
+
+    button {
+        justify-content: flex-start;
+        width: 100%;
+        padding: 4px;
+        background-color: transparent;
+        border-radius: 6px;
+        font-family: var(--font-body);
+        font-size: 14px;
+        font-weight: 400;
+        color: var(--bg-primary);
+        white-space: nowrap;
+
+        &:hover {
+            background-color: var(--surface-light-hover);
+        }
+
+        &.selected {
+            background-color: var(--surface-light-hover);
+            font-weight: 700;
+        }
     }
 }

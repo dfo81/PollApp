@@ -17,6 +17,11 @@
 
       img {
         content: url('/assets/icons/arrow_drop_down_purple.svg');
+        transition: transform 0.2s ease;
+      }
+
+      &[aria-expanded='true'] img {
+        transform: rotate(180deg);
       }
 
       &:hover {
@@ -36,6 +41,10 @@
     padding: 15px;
     font-family: var(--font-body);
     color: var(--primary-purple);
+
+    &.collapsed {
+      display: none;
+    }
 
     .title {
       display: flex;
@@ -97,5 +106,15 @@
         font-weight: 700;
       }
     }
+  }
+}
+
+@media (min-width: 1024px) {
+  .survey-results .results-box button {
+    display: none;
+  }
+
+  .survey-results .results-content.collapsed {
+    display: flex;
   }
 }

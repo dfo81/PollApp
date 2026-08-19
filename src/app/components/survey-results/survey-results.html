@@ -1,7 +1,14 @@
 <section class="survey-results">
   <div class="results-box">
-    <button>See results <img src="" alt="" /></button>
-    <div class="results-content">
+    <button
+      type="button"
+      [attr.aria-expanded]="resultsOpen()"
+      (click)="toggleResults()"
+    >
+      {{ resultsOpen() ? 'Close results' : 'See results' }}
+      <img src="" alt="" />
+    </button>
+    <div class="results-content" [class.collapsed]="!resultsOpen()">
       <div class="title">
         <h2>Survey results</h2>
         <h1>LIVE</h1>
