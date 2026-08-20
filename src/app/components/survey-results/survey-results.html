@@ -1,40 +1,39 @@
 <section class="survey-results">
   <div class="results-box">
-    <button
-      type="button"
-      [attr.aria-expanded]="resultsOpen()"
-      (click)="toggleResults()"
-    >
+    <button type="button" [attr.aria-expanded]="resultsOpen()" (click)="toggleResults()">
       {{ resultsOpen() ? 'Close results' : 'See results' }}
       <img src="" alt="" />
     </button>
     <div class="results-content" [class.collapsed]="!resultsOpen()">
       <div class="title">
         <h2>Survey results</h2>
-        <h1>LIVE</h1>
+        <h1>{{ live() ? 'LIVE' : 'FINAL' }}</h1>
       </div>
       <div class="results">
-        <div class="question">
-          <h3>1.</h3>
-          <h3>Which date would work best for you?</h3>
-        </div>
-        <div class="bars">
-          <div class="bar">
-            <h4>A</h4>
-            <div class="progressbar">
-              <div class="filler"> </div>
+        @for (question of results(); track question.id; let questionIndex = $index) {
+          <div class="result">
+            <div class="question">
+              <h3>{{ questionIndex + 1 }}.</h3>
+              <h3>{{ question.text }}</h3>
             </div>
-            <h4 class="percent">27%</h4>
-          </div>
-
-          <div class="bar">
-            <h4>B</h4>
-            <div class="progressbar">
-              <div class="filler"> </div>
+            <div class="bars">
+              @for (option of question.options; track option.id; let optionIndex = $index) {
+                <div class="bar">
+                  <h4>{{ letter(optionIndex) }}</h4>
+                  <div class="progressbar">
+                    <div class="filler" [style.width.%]="option.percent"></div>
+                  </div>
+                  <h4 class="percent">{{ option.percent }}%</h4>
+                </div>
+              }
             </div>
-            <h4 class="percent">44%</h4>
+            <span class="total">
+              {{ question.totalVotes }} {{ question.totalVotes === 1 ? 'vote' : 'votes' }}
+            </span>
           </div>
-        </div>
+        } @empty {
+          <p class="state">{{ loading() ? 'Loading results …' : 'No votes yet.' }}</p>
+        }
       </div>
     </div>
   </div>

@@ -125,9 +125,13 @@
 
           img {
             height: 20px;
+          }
 
-            &:active {
-              content: url(/assets/icons/check_checked_orange.svg);
+          &.disabled {
+            cursor: default;
+
+            &:hover {
+              background-color: transparent;
             }
           }
 
@@ -149,8 +153,32 @@
       }
     }
 
+    .state {
+      font-family: var(--font-body);
+      font-size: 16px;
+      color: var(--secondary-purple);
+
+      &.error {
+        color: #b3261e;
+      }
+
+      &.done {
+        font-weight: 700;
+        color: #ee9236;
+      }
+    }
+
     button {
       margin-left: auto;
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+
+        &:hover {
+          background-color: var(--secondary-orange);
+        }
+      }
     }
   }
 }

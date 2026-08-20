@@ -3,103 +3,83 @@
     <div class="main-frame">
       <div class="status-hl-box">
         <div class="status">
-          <span>Published</span>
+          <span>{{ running() ? 'Published' : 'Closed' }}</span>
           <img src="assets/icons/exit_light.svg" alt="" />
         </div>
         <div class="date">
-          <span>Ends on 01.09.2025</span>
-          <span>Category: Teamactivities</span>
+          <span>{{ deadline() }}</span>
+          <span>Category: {{ survey().category }}</span>
         </div>
-        <h1>Let´s Plan the Next Team Event Together</h1>
+        <h1>{{ survey().title }}</h1>
       </div>
-      <span
-        >We want to create team activities that eveyone will enjoy - share your preferences and
-        ideas in our survey to help us plan better expreiences together.</span
-      >
+      @if (survey().description; as description) {
+        <span>{{ description }}</span>
+      }
     </div>
     <div class="questions-box">
       <div class="questions">
-        <div class="question-component">
-          <div class="question-frame">
-            <h3>1.</h3>
-            <div class="question">
-              <h3>Which date would work best for you?</h3>
-              <h6>More than one answers are possible.</h6>
+        @for (question of survey().questions; track question.id; let questionIndex = $index) {
+          <div class="question-component">
+            <div class="question-frame">
+              <h3>{{ questionIndex + 1 }}.</h3>
+              <div class="question">
+                <h3>{{ question.text }}</h3>
+                <h6>
+                  {{
+                    question.allowMultiple
+                      ? 'More than one answers are possible.'
+                      : 'Only one answer is possible.'
+                  }}
+                </h6>
+              </div>
+            </div>
+            <div class="answers">
+              @for (option of question.options; track option.id; let optionIndex = $index) {
+                <div
+                  class="answer"
+                  role="checkbox"
+                  tabindex="0"
+                  [attr.aria-checked]="isSelected(option.id)"
+                  [class.disabled]="!running() || submitted()"
+                  (click)="toggle(question, option.id)"
+                  (keydown.enter)="toggle(question, option.id)"
+                  (keydown.space)="toggle(question, option.id)"
+                >
+                  <img
+                    [src]="
+                      isSelected(option.id)
+                        ? 'assets/icons/check_checked_orange.svg'
+                        : 'assets/icons/checkbox_default_purple.svg'
+                    "
+                    alt=""
+                  />
+                  <div class="answer-content">
+                    <h3>{{ letter(optionIndex) }}.</h3>
+                    <span>{{ option.text }}</span>
+                  </div>
+                </div>
+              }
             </div>
           </div>
-          <div class="answers">
-            <div class="answer">
-              <img src="assets/icons/checkbox_default_purple.svg" alt="" />
-              <div class="answer-content">
-                <h3>A.</h3>
-                <span>19.09.2025, Friday</span>
-              </div>
-            </div>
-            <div class="answer">
-              <img src="assets/icons/checkbox_default_purple.svg" alt="" />
-              <div class="answer-content">
-                <h3>B.</h3>
-                <span>10.10.2025, Friday</span>
-              </div>
-            </div>
-            <div class="answer">
-              <img src="assets/icons/checkbox_default_purple.svg" alt="" />
-              <div class="answer-content">
-                <h3>C.</h3>
-                <span>11.10.2025, Saturday</span>
-              </div>
-            </div>
-            <div class="answer">
-              <img src="assets/icons/checkbox_default_purple.svg" alt="" />
-              <div class="answer-content">
-                <h3>D.</h3>
-                <span>31.10.2025, Friday</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="question-component">
-          <div class="question-frame">
-            <h3>2.</h3>
-            <div class="question">
-              <h3>Choose the activities you prefer</h3>
-              <h6>More than one answers are possible.</h6>
-            </div>
-          </div>
-          <div class="answers">
-            <div class="answer">
-              <img src="assets/icons/checkbox_default_purple.svg" alt="" />
-              <div class="answer-content">
-                <h3>A.</h3>
-                <span>Outdoor adventure like kayaking</span>
-              </div>
-            </div>
-            <div class="answer">
-              <img src="assets/icons/checkbox_default_purple.svg" alt="" />
-              <div class="answer-content">
-                <h3>B.</h3>
-                <span>Office Costume Party</span>
-              </div>
-            </div>
-            <div class="answer">
-              <img src="assets/icons/checkbox_default_purple.svg" alt="" />
-              <div class="answer-content">
-                <h3>C.</h3>
-                <span>Bowling, mini-golf, volleyball</span>
-              </div>
-            </div>
-            <div class="answer">
-              <img src="assets/icons/checkbox_default_purple.svg" alt="" />
-              <div class="answer-content">
-                <h3>D.</h3>
-                <span>Beach party, Music &amp; cocktails</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        } @empty {
+          <p class="state">This survey has no questions yet.</p>
+        }
       </div>
 
-      <button class="btn-primary">Complete survey <img src="assets/icons/check_checked_purple.svg" alt=""></button>
+      @if (submitError(); as message) {
+        <p class="state error">{{ message }}</p>
+      }
+
+      @if (submitted()) {
+        <p class="state done">Thanks! Your answers were saved.</p>
+      } @else if (!running()) {
+        <p class="state">This survey has ended — the results are final.</p>
+      } @else if (survey().questions.length > 0) {
+        <button class="btn-primary" [disabled]="!hasSelection() || submitting()" (click)="submit()">
+          {{ submitting() ? 'Saving …' : 'Complete survey' }}
+          <img src="assets/icons/check_checked_purple.svg" alt="" />
+        </button>
+      }
     </div>
   </div>
 </section>

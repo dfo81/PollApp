@@ -65,7 +65,13 @@
     .results {
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 32px;
+
+      .result {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
 
       .question {
         display: flex;
@@ -89,9 +95,9 @@
 
             .filler {
               height: 100%;
-              width: 27%;
               background-color: var(--primary-orange);
               border-radius: 0 20px 20px 0;
+              transition: width 0.3s ease;
             }
           }
 
@@ -104,6 +110,15 @@
       h3 {
         font-size: 18px;
         font-weight: 700;
+      }
+
+      .total {
+        font-size: 14px;
+        opacity: 0.7;
+      }
+
+      .state {
+        font-size: 16px;
       }
     }
   }

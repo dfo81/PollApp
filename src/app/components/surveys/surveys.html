@@ -8,7 +8,17 @@
   } @else {
     <div class="carousell">
       <span>Ending soon surveys</span>
-      <div class="cards">
+      <div
+        class="cards"
+        #cards
+        [class.dragging]="dragging()"
+        (wheel)="onCardsWheel($event)"
+        (scroll)="measureCards()"
+        (pointerdown)="onCardsPointerDown($event)"
+        (pointermove)="onCardsPointerMove($event)"
+        (pointerup)="onCardsPointerEnd($event)"
+        (pointercancel)="onCardsPointerEnd($event)"
+      >
         @for (survey of endingSoon(); track survey.id) {
           <div class="card" [routerLink]="['/survey', survey.id]">
             <div class="description">
@@ -21,6 +31,16 @@
           <p class="state">No surveys are ending soon.</p>
         }
       </div>
+
+      @if (cardsScrollable()) {
+        <div class="cards-scrollbar" aria-hidden="true">
+          <div
+            class="thumb"
+            [style.left.px]="cardsThumbLeft()"
+            [style.width.px]="cardsThumbWidth()"
+          ></div>
+        </div>
+      }
     </div>
 
     <div class="survey-sort-box">
@@ -82,26 +102,32 @@
           }
         </div>
       </div>
-      <div class="other">
-        @for (survey of listed(); track survey.id) {
-          <div class="survey" [routerLink]="['/survey', survey.id]">
-            <div class="title-box">
-              <span class="category">{{ survey.category }}</span>
-              <span class="title">{{ survey.title }}</span>
+      <div class="list-scroll">
+        <div class="other" #list (scroll)="onListScroll()">
+          @for (survey of listed(); track survey.id) {
+            <div class="survey" [routerLink]="['/survey', survey.id]">
+              <div class="title-box">
+                <span class="category">{{ survey.category }}</span>
+                <span class="title">{{ survey.title }}</span>
+              </div>
+              <span class="deadline">{{ label(survey) }}</span>
             </div>
-            <span class="deadline">{{ label(survey) }}</span>
-          </div>
-        } @empty {
-          <p class="state">
-            @if (category() !== null) {
-              No surveys in “{{ category() }}”.
-            } @else if (tab() === 'active') {
-              There are no active surveys right now.
-            } @else {
-              There are no past surveys yet.
-            }
-          </p>
-        }
+          } @empty {
+            <p class="state">
+              @if (category() !== null) {
+                No surveys in “{{ category() }}”.
+              } @else if (tab() === 'active') {
+                There are no active surveys right now.
+              } @else {
+                There are no past surveys yet.
+              }
+            </p>
+          }
+        </div>
+
+        <div class="scrollbar" [class.visible]="listScrolling()" aria-hidden="true">
+          <div class="thumb" [style.top.px]="thumbTop()" [style.height.px]="thumbHeight()"></div>
+        </div>
       </div>
     </div>
   }

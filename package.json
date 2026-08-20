@@ -6,6 +6,7 @@
     "start": "ng serve --host 0.0.0.0",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "seed": "node scripts/seed-demo-surveys.mjs",
     "test": "ng test",
     "types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > src/app/core/database.types.ts"
   },

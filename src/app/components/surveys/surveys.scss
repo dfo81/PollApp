@@ -38,6 +38,23 @@ main {
       color: #fff;
     }
 
+    // Always on, unlike the list scrollbar: the cards to the right are invisible otherwise,
+    // so this is the only hint that the carousel scrolls at all. The track shows the extent.
+    .cards-scrollbar {
+      position: relative;
+      height: 8px;
+      border-radius: 20px;
+      background-color: rgba(255, 255, 255, 0.12);
+
+      .thumb {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        background-color: var(--primary-orange);
+        border-radius: 20px;
+      }
+    }
+
     .cards {
       display: flex;
       width: 100%;
@@ -46,6 +63,17 @@ main {
       overflow-y: hidden;
       overscroll-behavior-x: contain;
       scrollbar-width: none;
+
+      // While dragging the cursor stays on the grab hand and the card text must not
+      // get selected under the pointer.
+      &.dragging {
+        user-select: none;
+        cursor: grabbing;
+
+        .card {
+          cursor: grabbing;
+        }
+      }
 
       .card {
         display: flex;
@@ -202,18 +230,64 @@ main {
     gap: 24px;
     padding-bottom: 70px;
 
+    .list-scroll {
+      position: relative;
+    }
+    
+    .scrollbar {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 8px;
+      opacity: 0;
+      transition: opacity 250ms ease;
+      pointer-events: none;
+
+      &.visible {
+        opacity: 1;
+      }
+
+      .thumb {
+        position: absolute;
+        width: 100%;
+        background-color: var(--primary-orange);
+        border-radius: 6px;
+      }
+    }
+
     .other {
+      --row-height: 143px;
+      --row-gap: 16px;
+      --visible-rows: 6;
+
       display: grid;
       grid-template-columns: 1fr;
-      gap: 16px;
+      grid-auto-rows: minmax(var(--row-height), auto);
+      gap: var(--row-gap);
+      max-height: calc(
+        var(--visible-rows) * var(--row-height) + (var(--visible-rows) - 1) * var(--row-gap)
+      );
+      overflow-y: auto;
+      overscroll-behavior-y: contain;
+      padding-right: 24px;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
 
       @media (min-width: 940px) {
+        --row-height: 118px;
+        --visible-rows: 3;
+
         grid-template-columns: repeat(2, 1fr);
       }
 
       .survey {
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
         gap: 24px;
         max-width: 513px;
         padding: 12px 16px;
@@ -247,13 +321,13 @@ main {
         }
 
         .deadline {
-            margin-left: auto;
-            padding: 3px 6px;
-            background-color: var(--secondary-orange);
-            border-radius: 0 14px 0 0;
-            font-size: 12px;
-            color: var(--bg-primary);
-          }
+          margin-left: auto;
+          padding: 3px 6px;
+          background-color: var(--secondary-orange);
+          border-radius: 0 14px 0 0;
+          font-size: 12px;
+          color: var(--bg-primary);
+        }
       }
     }
   }

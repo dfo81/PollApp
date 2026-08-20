@@ -1,5 +1,5 @@
 import { Component, ElementRef, output, signal, viewChild } from '@angular/core';
-import { SURVEY_CATEGORIES } from '../../core/survey.models';
+import { letter, SURVEY_CATEGORIES } from '../../core/survey.models';
 
 interface DraftAnswer {
   id: number;
@@ -66,10 +66,7 @@ export class CreateSurvey {
     );
   }
 
-  // A, B, C … a draft is not expected to run past Z.
-  protected letter(index: number): string {
-    return String.fromCharCode(65 + index);
-  }
+  protected readonly letter = letter;
 
   private newQuestion(): DraftQuestion {
     return { id: this.nextId++, answers: [{ id: this.nextId++ }, { id: this.nextId++ }] };
