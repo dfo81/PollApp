@@ -34,14 +34,3 @@
 
 <app-surveys />
 
-<dialog
-  #createDialog
-  class="create-dialog"
-  (close)="onDialogClose()"
-  (mousedown)="onDialogMouseDown($event)"
-  (click)="onBackdropClick($event)"
->
-  @if (createOpen()) {
-    <app-create-survey (closed)="closeCreate()" />
-  }
-</dialog>

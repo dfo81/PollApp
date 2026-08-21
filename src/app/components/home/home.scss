@@ -53,27 +53,6 @@ main {
   }
 }
 
-.create-dialog {
-  width: 100%;
-  max-width: 1440px;
-  max-height: 100dvh;
-  margin: auto;
-  padding: 40px var(--content-padding-inline);
-  border: none;
-  background-color: transparent;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  &::backdrop {
-    background-color: #fff;
-  }
-}
-
 @media (min-width: 768px) {
   main {
     display: grid;

@@ -71,11 +71,11 @@ alter publication supabase_realtime add table votes;
 insert into surveys (title, description, category, ends_at) values
   ('Let´s Plan the Next Team Event Together',
    'We want to create team activities that everyone will enjoy.',
-   'Teamactivities', now() + interval '2 days'),
-  ('Fit & Wellness survey!',            null, 'Health',         now() + interval '9 days'),
-  ('Which tools should we adopt?',      null, 'Tools',          now() + interval '30 days'),
-  ('Summer party location 2026',        null, 'Teamactivities', now() - interval '5 days'),
-  ('Office snack preferences',          null, 'Health',         now() - interval '40 days');
+   'Team Activities', now() + interval '2 days'),
+  ('Fit & Wellness survey!',            null, 'Health & Wellness', now() + interval '9 days'),
+  ('Which tools should we adopt?',      null, 'Technology & Innovation', now() + interval '30 days'),
+  ('Summer party location 2026',        null, 'Team Activities', now() - interval '5 days'),
+  ('Office snack preferences',          null, 'Health & Wellness', now() - interval '40 days');
 
 with q as (
   insert into questions (survey_id, text, position, allow_multiple)

@@ -2,28 +2,28 @@
   <div class="results-box">
     <button type="button" [attr.aria-expanded]="resultsOpen()" (click)="toggleResults()">
       {{ resultsOpen() ? 'Close results' : 'See results' }}
-      <img src="" alt="" />
+      <img src="assets/icons/arrow_drop_down_purple.svg" alt="" />
     </button>
     <div class="results-content" [class.collapsed]="!resultsOpen()">
       <div class="title">
         <h2>Survey results</h2>
-        <h1>{{ live() ? 'LIVE' : 'FINAL' }}</h1>
+        <span class="status">{{ live() ? 'LIVE' : 'FINAL' }}</span>
       </div>
       <div class="results">
         @for (question of results(); track question.id; let questionIndex = $index) {
           <div class="result">
             <div class="question">
-              <h3>{{ questionIndex + 1 }}.</h3>
+              <span class="number">{{ questionIndex + 1 }}.</span>
               <h3>{{ question.text }}</h3>
             </div>
             <div class="bars">
               @for (option of question.options; track option.id; let optionIndex = $index) {
                 <div class="bar">
-                  <h4>{{ letter(optionIndex) }}</h4>
+                  <span class="letter">{{ letter(optionIndex) }}</span>
                   <div class="progressbar">
                     <div class="filler" [style.width.%]="option.percent"></div>
                   </div>
-                  <h4 class="percent">{{ option.percent }}%</h4>
+                  <span class="percent">{{ option.percent }}%</span>
                 </div>
               }
             </div>

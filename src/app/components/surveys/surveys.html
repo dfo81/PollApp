@@ -1,5 +1,5 @@
-<main>
-  <h1>Your surveys</h1>
+<section class="surveys">
+  <h2>Your surveys</h2>
 
   @if (surveys.error()) {
     <p class="state error">Surveys could not be loaded.</p>
@@ -22,7 +22,7 @@
         @for (survey of endingSoon(); track survey.id) {
           <div class="card" [routerLink]="['/survey', survey.id]">
             <div class="description">
-              <h5>{{ survey.category }}</h5>
+              <p class="category">{{ survey.category }}</p>
               <h3>{{ survey.title }}</h3>
             </div>
             <span class="label">{{ label(survey) }}</span>
@@ -131,4 +131,4 @@
       </div>
     </div>
   }
-</main>
+</section>

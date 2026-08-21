@@ -93,12 +93,17 @@
         display: flex;
         gap: 3px;
 
+        .number {
+          font-size: 18px;
+          font-weight: 700;
+        }
+
         .question {
           display: flex;
           flex-direction: column;
           gap: 5px;
 
-          h6 {
+          .hint {
             font-size: 12px;
             font-weight: 400;
           }
@@ -140,7 +145,7 @@
             gap: 4px;
             color: var(--primary-purple);
 
-            h3 {
+            .letter {
               font-size: 16px;
               font-weight: 700;
             }

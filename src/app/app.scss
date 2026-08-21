@@ -1,8 +1,61 @@
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
 :host(.light-page) {
   background-color: #fff;
+}
+
+.create-dialog {
+  width: 100%;
+  max-width: 1440px;
+  max-height: 100dvh;
+  margin: auto;
+  padding: 40px var(--content-padding-inline);
+  border: none;
+  background-color: transparent;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &::backdrop {
+    background-color: #fff;
+  }
+}
+
+footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding: 32px var(--content-padding-inline) 40px;
+
+  a {
+    padding: 4px 14px 4px 10px;
+    background-color: var(--secondary-orange);
+    border-radius: 0 14px 0 0;
+    font-family: var(--font-button);
+    font-size: 14px;
+    color: var(--bg-primary);
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: var(--primary-orange);
+    }
+  }
 }

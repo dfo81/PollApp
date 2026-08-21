@@ -1,42 +1,19 @@
-import { Component, ElementRef, signal, viewChild } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Surveys } from '../surveys/surveys';
-import { CreateSurvey } from '../create-survey/create-survey';
+import { CreateSurveyDialog } from '../../core/create-survey-dialog';
 
+/** Home screen with the intro section and the survey lists. */
 @Component({
   selector: 'app-home',
-  imports: [Surveys, CreateSurvey],
+  imports: [Surveys],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
 export class Home {
-  private readonly createDialog = viewChild.required<ElementRef<HTMLDialogElement>>('createDialog');
+  private readonly createDialog = inject(CreateSurveyDialog);
 
-  protected readonly createOpen = signal(false);
-
-  private pressStartedOnBackdrop = false;
-
+  /** Opens the create dialog that lives in the app shell. */
   protected openCreate(): void {
-    this.createOpen.set(true);
-    this.createDialog().nativeElement.showModal();
-  }
-
-  protected closeCreate(): void {
-    this.createDialog().nativeElement.close();
-  }
-
-  protected onDialogClose(): void {
-    this.createOpen.set(false);
-  }
-
-  protected onDialogMouseDown(event: MouseEvent): void {
-    this.pressStartedOnBackdrop = event.target === this.createDialog().nativeElement;
-  }
-
-  protected onBackdropClick(event: MouseEvent): void {
-    const onBackdrop = event.target === this.createDialog().nativeElement;
-    if (this.pressStartedOnBackdrop && onBackdrop) {
-      this.closeCreate();
-    }
-    this.pressStartedOnBackdrop = false;
+    this.createDialog.requestOpen();
   }
 }

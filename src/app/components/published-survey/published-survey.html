@@ -13,7 +13,7 @@
         <h1>{{ survey().title }}</h1>
       </div>
       @if (survey().description; as description) {
-        <span>{{ description }}</span>
+        <p>{{ description }}</p>
       }
     </div>
     <div class="questions-box">
@@ -21,16 +21,16 @@
         @for (question of survey().questions; track question.id; let questionIndex = $index) {
           <div class="question-component">
             <div class="question-frame">
-              <h3>{{ questionIndex + 1 }}.</h3>
+              <span class="number">{{ questionIndex + 1 }}.</span>
               <div class="question">
                 <h3>{{ question.text }}</h3>
-                <h6>
+                <p class="hint">
                   {{
                     question.allowMultiple
                       ? 'More than one answers are possible.'
                       : 'Only one answer is possible.'
                   }}
-                </h6>
+                </p>
               </div>
             </div>
             <div class="answers">
@@ -54,7 +54,7 @@
                     alt=""
                   />
                   <div class="answer-content">
-                    <h3>{{ letter(optionIndex) }}.</h3>
+                    <span class="letter">{{ letter(optionIndex) }}.</span>
                     <span>{{ option.text }}</span>
                   </div>
                 </div>

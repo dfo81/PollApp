@@ -30,7 +30,7 @@ $button-soft-hover: #ffb77099;
       flex-direction: column;
       gap: 16px;
 
-      h5 {
+      .badge {
         display: flex;
         align-items: center;
         margin-right: auto;
@@ -121,8 +121,6 @@ $button-soft-hover: #ffb77099;
     resize: vertical;
   }
 
-  // Mobile: delete icon sits in the label row, input spans the full width.
-  // Desktop: the icon moves down next to the input, as in the mockup.
   .field {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
@@ -254,7 +252,6 @@ $button-soft-hover: #ffb77099;
     gap: 4px;
     margin: 12px auto 72px 12px;
     padding: 8px 12px;
-    // The global button reset adds a rounded corner and a default background.
     background-color: transparent;
     border-radius: 0;
     border-bottom: 1px solid #fff;
@@ -296,5 +293,80 @@ $button-soft-hover: #ffb77099;
       justify-self: start;
       align-self: start;
     }
+  }
+}
+
+.required {
+  color: var(--primary-orange);
+  font-weight: 700;
+}
+
+.required-note {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #fff;
+}
+
+.field-error {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--secondary-orange);
+}
+
+.input-fields {
+  input.invalid,
+  textarea.invalid {
+    outline: 2px solid var(--primary-orange);
+  }
+
+  .drop-down-toggle.invalid {
+    outline: 2px solid var(--primary-orange);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  .answers-checkbox {
+    gap: 6px;
+    cursor: pointer;
+  }
+}
+
+.save-error {
+  margin-top: 12px;
+  font-size: 16px;
+  color: var(--secondary-orange);
+}
+
+.publish:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.published-frame {
+  .published-body {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 40px 24px;
+    background-color: #8e709929;
+    border-radius: 5px 80px 5px 5px;
+    color: #fff;
+
+    img {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+    }
+
+    p {
+      font-size: 18px;
+      line-height: 26px;
+    }
+  }
+
+  .published-actions {
+    display: flex;
+    justify-content: flex-end;
   }
 }

@@ -1,41 +1,103 @@
 <div class="create-survey">
-  <div class="frame">
-    <div class="header">
-      <div class="title">
-        <h5>Draft</h5>
-        <h2>Create new survey</h2>
+  @if (createdId()) {
+    <div class="frame published-frame">
+      <div class="header">
+        <div class="title">
+          <span class="badge">Published</span>
+          <h2>Your survey is now published</h2>
+        </div>
+        <div class="buttons">
+          <img class="exit" src="assets/icons/exit_dark.svg" alt="Close" (click)="closed.emit()" />
+          <button class="cancel" type="button" (click)="closed.emit()">
+            Close <img src="assets/icons/close.svg" alt="" />
+          </button>
+        </div>
       </div>
-      <div class="buttons">
-        <img class="exit" src="assets/icons/exit_dark.svg" alt="Cancel" (click)="closed.emit()" />
-        <button class="cancel" type="button" (click)="closed.emit()">
-          Cancel <img src="assets/icons/close.svg" alt="" />
+
+      <div class="published-body">
+        <img src="assets/icons/check_checked_orange.svg" alt="" />
+        <p>
+          <strong>{{ title() }}</strong> is live. Share the link and watch the results come in.
+        </p>
+      </div>
+
+      <div class="published-actions">
+        <button class="btn-primary" type="button" (click)="openCreated()">
+          View survey <img src="assets/icons/check_checked_purple.svg" alt="" />
         </button>
       </div>
     </div>
-    <div class="input-fields">
-      <div class="info-frame">
-        <div class="field">
-          <span class="field-label"><b>Survey name</b></span>
-          <img class="field-delete" src="assets/icons/delete.svg" alt="" />
-          <input type="text" />
+  } @else {
+    <div class="frame">
+      <div class="header">
+        <div class="title">
+          <span class="badge">Draft</span>
+          <h2>Create new survey</h2>
         </div>
-
-        <div class="date-category-row">
-          <div class="field date-field">
-            <span class="field-label"><b>Set end date</b> (optional)</span>
-            <img class="field-delete" src="assets/icons/delete.svg" alt="" />
-            <input type="text" />
+        <div class="buttons">
+          <img class="exit" src="assets/icons/exit_dark.svg" alt="Cancel" (click)="closed.emit()" />
+          <button class="cancel" type="button" (click)="closed.emit()">
+            Cancel <img src="assets/icons/close.svg" alt="" />
+          </button>
+        </div>
+      </div>
+      <div class="input-fields">
+        <div class="info-frame">
+          <div class="field">
+            <span class="field-label">
+              <strong>Survey name</strong> <span class="required" aria-hidden="true">*</span>
+            </span>
+            <img
+              class="field-delete"
+              src="assets/icons/delete.svg"
+              alt="Clear survey name"
+              (click)="clearTitle()"
+            />
+            <input
+              type="text"
+              required
+              [value]="title()"
+              [class.invalid]="attempted() && titleMissing()"
+              [attr.aria-invalid]="attempted() && titleMissing()"
+              (input)="setTitle($event)"
+            />
+            @if (attempted() && titleMissing()) {
+              <p class="field-error">Please name your survey.</p>
+            }
           </div>
+
+          <div class="date-category-row">
+            <div class="field date-field">
+              <span class="field-label"><strong>Set end date</strong> (optional)</span>
+              <img
+                class="field-delete"
+                src="assets/icons/delete.svg"
+                alt="Clear end date"
+                (click)="clearEndDate()"
+              />
+              <input
+                type="date"
+                [value]="endDate()"
+                [class.invalid]="attempted() && endDateInvalid()"
+                [attr.aria-invalid]="attempted() && endDateInvalid()"
+                (input)="setEndDate($event)"
+              />
+              @if (attempted() && endDateInvalid()) {
+                <p class="field-error">The end date has to be in the future.</p>
+              }
+            </div>
 
             <div class="drop-down" #categoryField>
               <button
                 class="drop-down-toggle"
                 type="button"
                 aria-haspopup="listbox"
+                [class.invalid]="attempted() && categoryMissing()"
                 [attr.aria-expanded]="categoryOpen()"
                 (click)="toggleCategory()"
               >
                 <span>{{ category() ?? 'Choose category' }}</span>
+                <span class="required" aria-hidden="true">*</span>
                 <img src="assets/icons/arrow_drop_down_white.svg" alt="" />
               </button>
 
@@ -56,61 +118,120 @@
                   }
                 </ul>
               }
-            </div>
-        </div>
-      </div>
-      <div class="description-frame">
-        <div class="field">
-          <span class="field-label"><b>Describing text</b> (optional)</span>
-          <img class="field-delete" src="assets/icons/delete.svg" alt="" />
-          <textarea name="" id=""></textarea>
-        </div>
-      </div>
-      @for (question of questions(); track question.id; let questionIndex = $index) {
-        <div class="qna-box">
-          <div class="question input-title">
-            <span><b>{{ questionIndex + 1 }}. Question</b></span>
-            @if (questions().length > 1) {
-              <img
-                class="delete-icon"
-                src="assets/icons/delete.svg"
-                alt="Remove question"
-                (click)="removeQuestion(question.id)"
-              />
-            }
-          </div>
-          <input type="text" placeholder="Which date would work best for you?" />
-          <div class="answer-title">
-            <span>Answers</span>
-            <div class="answers-checkbox">
-              <img src="assets/icons/checkbox_default_white.svg" alt="" />
-              <span>Allow multiple answers.</span>
+
+              @if (attempted() && categoryMissing()) {
+                <p class="field-error">Please pick a category.</p>
+              }
             </div>
           </div>
-          @for (answer of question.answers; track answer.id; let answerIndex = $index) {
-            <div class="answer">
-              <span>{{ letter(answerIndex) }}.</span>
-              <input type="text" />
-              @if (question.answers.length > 2) {
+        </div>
+        <div class="description-frame">
+          <div class="field">
+            <span class="field-label"><strong>Describing text</strong> (optional)</span>
+            <img
+              class="field-delete"
+              src="assets/icons/delete.svg"
+              alt="Clear describing text"
+              (click)="clearDescription()"
+            />
+            <textarea [value]="description()" (input)="setDescription($event)"></textarea>
+          </div>
+        </div>
+        @for (question of questions(); track question.id; let questionIndex = $index) {
+          <div class="qna-box">
+            <div class="question input-title">
+              <span>
+                <strong>{{ questionIndex + 1 }}. Question</strong>
+                <span class="required" aria-hidden="true">*</span>
+              </span>
+              @if (questions().length > 1) {
                 <img
                   class="delete-icon"
                   src="assets/icons/delete.svg"
-                  alt="Remove answer"
-                  (click)="removeAnswer(question.id, answer.id)"
+                  alt="Remove question"
+                  (click)="removeQuestion(question.id)"
                 />
               }
             </div>
-          }
-          <button class="add-button" type="button" (click)="addAnswer(question.id)">
-            <span>Add answer</span>
-            <img src="assets/icons/add_circle_white.svg" alt="" />
-          </button>
-        </div>
+            <input
+              type="text"
+              required
+              placeholder="Which date would work best for you?"
+              [value]="question.text"
+              [class.invalid]="attempted() && questionMissing(question)"
+              [attr.aria-invalid]="attempted() && questionMissing(question)"
+              (input)="setQuestionText(question.id, $event)"
+            />
+            @if (attempted() && questionMissing(question)) {
+              <p class="field-error">Please write a question.</p>
+            }
+            <div class="answer-title">
+              <span>Answers <span class="required" aria-hidden="true">*</span></span>
+              <div
+                class="answers-checkbox"
+                role="checkbox"
+                tabindex="0"
+                [attr.aria-checked]="question.allowMultiple"
+                (click)="toggleAllowMultiple(question.id)"
+                (keydown.enter)="toggleAllowMultiple(question.id)"
+                (keydown.space)="toggleAllowMultiple(question.id)"
+              >
+                <img
+                  [src]="
+                    question.allowMultiple
+                      ? 'assets/icons/check_checked_orange.svg'
+                      : 'assets/icons/checkbox_default_white.svg'
+                  "
+                  alt=""
+                />
+                <span>Allow multiple answers.</span>
+              </div>
+            </div>
+            @for (answer of question.answers; track answer.id; let answerIndex = $index) {
+              <div class="answer">
+                <span>{{ letter(answerIndex) }}.</span>
+                <input
+                  type="text"
+                  required
+                  [value]="answer.text"
+                  [class.invalid]="attempted() && answerMissing(answer)"
+                  [attr.aria-invalid]="attempted() && answerMissing(answer)"
+                  (input)="setAnswerText(question.id, answer.id, $event)"
+                />
+                @if (question.answers.length > 2) {
+                  <img
+                    class="delete-icon"
+                    src="assets/icons/delete.svg"
+                    alt="Remove answer"
+                    (click)="removeAnswer(question.id, answer.id)"
+                  />
+                }
+              </div>
+            }
+            @if (attempted() && anyAnswerMissing(question)) {
+              <p class="field-error">Every answer needs a text.</p>
+            }
+            <button class="add-button" type="button" (click)="addAnswer(question.id)">
+              <span>Add answer</span>
+              <img src="assets/icons/add_circle_white.svg" alt="" />
+            </button>
+          </div>
+        }
+        <button class="add-question" type="button" (click)="addQuestion()">
+          Add next question <img src="assets/icons/add_circle_white.svg" alt="" />
+        </button>
+      </div>
+
+      <p class="required-note"><span class="required">*</span> Required field</p>
+
+      @if (saveError(); as message) {
+        <p class="save-error">{{ message }}</p>
       }
-      <button class="add-question" type="button" (click)="addQuestion()">
-        Add next question <img src="assets/icons/add_circle_white.svg" alt="" />
+
+      <button class="publish btn-primary" type="button" [disabled]="saving()" (click)="publish()">
+        {{ saving() ? 'Publishing …' : 'Publish' }}
+        <img src="assets/icons/check_checked_purple.svg" alt="" />
       </button>
     </div>
-    <button class="publish btn-primary">Publish <img src="assets/icons/check_checked_purple.svg" alt="" /></button>
-  </div>
+  }
 </div>

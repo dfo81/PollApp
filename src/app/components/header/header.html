@@ -1,12 +1,12 @@
 <header>
-  <a href="#">
+  <a routerLink="/">
     <img
       [src]="light() ? 'assets/icons/Logo_dark.svg' : 'assets/icons/Logo_light.svg'"
       alt="Logo"
     />
   </a>
   @if (createButton()) {
-    <button class="btn-primary">
+    <button class="btn-primary" type="button" (click)="openCreate()">
       Create survey
     </button>
   }
