@@ -100,6 +100,33 @@ button {
     }
 }
 
+// Keeps its icon folded away and unfolds it on hover. Only from the tablet breakpoint
+// on, below it the icon simply sits next to the label.
+.btn-reveal {
+    @media (min-width: 768px) {
+        gap: 0;
+        transition: background-color 0.2s ease-in-out;
+
+        img {
+            width: 0;
+            margin-left: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition:
+                width 0.25s ease,
+                margin-left 0.25s ease,
+                opacity 0.2s ease;
+        }
+
+        &:hover img,
+        &:focus-visible img {
+            width: 24px;
+            margin-left: 10px;
+            opacity: 1;
+        }
+    }
+}
+
 .dropdown-menu {
     position: absolute;
     top: 100%;

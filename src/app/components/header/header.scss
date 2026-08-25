@@ -16,14 +16,15 @@ header {
   width: 100%;
   justify-content: space-between;
 
+  // Scoped to the logo on purpose, the create button carries an icon of its own.
   a {
     display: inline-flex;
-  }
 
-  img {
-    display: block;
-    height: 46px;
-    width: auto;
+    img {
+      display: block;
+      height: 46px;
+      width: auto;
+    }
   }
 
   button {

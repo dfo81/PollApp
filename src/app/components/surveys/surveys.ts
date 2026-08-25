@@ -30,6 +30,9 @@ const LINE_HEIGHT_PX = 16;
 /** How many surveys the "ending soon" carousel shows at most. */
 const ENDING_SOON_COUNT = 6;
 
+/** How many surveys of the list are on screen before it starts to scroll. */
+const LIST_VISIBLE_COUNT = 6;
+
 /**
  * Survey lists of the home screen: a carousel of the surveys ending soon and below it
  * the full list, switchable between running and finished surveys and filterable by
@@ -99,6 +102,9 @@ export class Surveys {
   protected readonly thumbTop = signal(0);
 
   private hideScrollbar?: ReturnType<typeof setTimeout>;
+
+  /** Width of the list at the last measurement, see {@link watchListWidth}. */
+  private listWidth = 0;
 
   /** True when the carousel holds more cards than fit on screen. */
   protected readonly cardsScrollable = signal(false);
@@ -277,6 +283,60 @@ export class Surveys {
   }
 
   /**
+   * Measures the height the first {@link LIST_VISIBLE_COUNT} surveys actually take up
+   * and offers it to the stylesheet. A fixed row height cuts the last visible row in
+   * half as soon as a title wraps onto a second line, measuring the cards keeps the box
+   * flush with them.
+   *
+   * Only the two column layout caps the list, on mobile the stylesheet ignores the
+   * measurement and runs the full list. Shorter lists drop the cap either way, they
+   * have nothing to scroll.
+   */
+  private measureList(): void {
+    const list = this.list()?.nativeElement;
+    if (!list) {
+      return;
+    }
+
+    const surveys = list.querySelectorAll<HTMLElement>('.survey');
+    const last = surveys[LIST_VISIBLE_COUNT - 1];
+
+    if (!last) {
+      list.style.removeProperty('--list-max-height');
+      return;
+    }
+
+    const height = last.offsetTop + last.offsetHeight - surveys[0].offsetTop;
+    list.style.setProperty('--list-max-height', `${height}px`);
+  }
+
+  /**
+   * Re-measures the list whenever it is given a new width, since that is what makes the
+   * titles wrap differently. Height changes are ignored, those are the result of the
+   * measurement itself and would otherwise feed back into it.
+   *
+   * @param destroyRef Used to disconnect the observer with the component.
+   */
+  private watchListWidth(destroyRef: DestroyRef): void {
+    const list = this.list()?.nativeElement;
+    if (!list || typeof ResizeObserver === 'undefined') {
+      return;
+    }
+
+    const observer = new ResizeObserver(() => {
+      if (list.clientWidth === this.listWidth) {
+        return;
+      }
+
+      this.listWidth = list.clientWidth;
+      this.measureList();
+    });
+
+    observer.observe(list);
+    destroyRef.onDestroy(() => observer.disconnect());
+  }
+
+  /**
    * Moves the list thumb with the list and shows the scrollbar for a moment.
    *
    * A thumb held at its minimum height is taller than its share of the track, so the
@@ -379,7 +439,8 @@ export class Surveys {
   }
 
   /**
-   * Keeps the carousel thumb measured and swallows the click that ends a drag.
+   * Keeps the carousel thumb and the list height measured and swallows the click that
+   * ends a drag.
    *
    * Angular has no capture phase binding, so that listener is registered by hand and
    * sits in front of the routerLink of the card.
@@ -393,7 +454,19 @@ export class Surveys {
       this.measureCards();
     });
 
-    afterNextRender(() => this.swallowDragClicks(destroyRef));
+    afterRenderEffect(() => {
+      this.listed();
+      this.measureList();
+    });
+
+    afterNextRender(() => {
+      this.swallowDragClicks(destroyRef);
+      this.watchListWidth(destroyRef);
+
+      // The first measurement runs on the fallback font, whose titles may wrap at a
+      // different word than the real one.
+      void document.fonts?.ready.then(() => this.measureList());
+    });
   }
 
   /**
