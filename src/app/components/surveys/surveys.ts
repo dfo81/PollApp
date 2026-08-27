@@ -4,6 +4,7 @@ import {
   Component,
   computed,
   DestroyRef,
+  effect,
   ElementRef,
   inject,
   resource,
@@ -13,6 +14,7 @@ import {
 import { RouterLink } from '@angular/router';
 import { SurveyService } from '../../core/survey-service';
 import { CreateSurveyDialog } from '../../core/create-survey-dialog';
+import { CardsCarousel } from './cards-carousel';
 import {
   ALL_CATEGORIES,
   deadlineLabel,
@@ -34,6 +36,13 @@ const ENDING_SOON_COUNT = 6;
 const LIST_VISIBLE_COUNT = 6;
 
 /**
+ * How far the list reaches into the next survey when there is more to scroll to. The cut
+ * off card is what tells the visitor the list goes on, a scrollbar that only shows up
+ * during scrolling cannot say that.
+ */
+const LIST_PEEK_PX = 24;
+
+/**
  * Survey lists of the home screen: a carousel of the surveys ending soon and below it
  * the full list, switchable between running and finished surveys and filterable by
  * category. Both scrollbars are drawn by hand, the native ones are hidden.
@@ -46,13 +55,16 @@ const LIST_VISIBLE_COUNT = 6;
   host: {
     '(document:click)': 'onDocumentClick($event)',
     '(document:keydown.escape)': 'closeDropdown()',
-    '(window:resize)': 'measureCards()',
+    '(window:resize)': 'carousel.measure()',
   },
 })
 export class Surveys {
   private readonly surveyService = inject(SurveyService);
 
   private readonly createDialog = inject(CreateSurveyDialog);
+
+  /** Keeps a proportional thumb visible on long lists. */
+  private static readonly MIN_THUMB_SIZE = 24;
 
   /** How long the list scrollbar stays visible after the last scroll. */
   private static readonly SCROLLBAR_FADE_MS = 800;
@@ -64,17 +76,14 @@ export class Surveys {
    */
   private static readonly THUMB_HEIGHT: number | null = null;
 
-  /** Keeps a proportional thumb visible on long lists and wide carousels. */
-  private static readonly MIN_THUMB_SIZE = 24;
-
-  /** Below this the pointer is still on its way to a click, not dragging the carousel. */
-  private static readonly DRAG_THRESHOLD = 5;
-
   private readonly categoryFilter = viewChild<ElementRef<HTMLElement>>('categoryFilter');
 
   private readonly list = viewChild<ElementRef<HTMLElement>>('list');
 
   private readonly cards = viewChild<ElementRef<HTMLElement>>('cards');
+
+  /** Drag, wheel and scrollbar of the "ending soon" carousel. */
+  protected readonly carousel = new CardsCarousel(() => this.cards()?.nativeElement);
 
   /** All surveys. Reloads whenever a survey is published in the create dialog. */
   protected readonly surveys = resource({
@@ -106,27 +115,6 @@ export class Surveys {
   /** Width of the list at the last measurement, see {@link watchListWidth}. */
   private listWidth = 0;
 
-  /** True when the carousel holds more cards than fit on screen. */
-  protected readonly cardsScrollable = signal(false);
-
-  /** Width of the carousel thumb in pixels. */
-  protected readonly cardsThumbWidth = signal(0);
-
-  /** Offset of the carousel thumb from the left of its track, in pixels. */
-  protected readonly cardsThumbLeft = signal(0);
-
-  /** True while the carousel is being dragged with the mouse. */
-  protected readonly dragging = signal(false);
-
-  private dragPointer: number | null = null;
-
-  private dragStartX = 0;
-
-  private dragStartScroll = 0;
-
-  /** Set once a drag passes the threshold, cleared by the click it produces. */
-  private dragged = false;
-
   /** Surveys that still accept votes. */
   protected readonly running = computed(() => this.surveys.value().filter((s) => isRunning(s)));
 
@@ -151,138 +139,6 @@ export class Surveys {
   });
 
   /**
-   * Maps a plain vertical wheel onto the carousel, which scrolls sideways. Without this
-   * the cards are unreachable with a mouse, since the horizontal scrollbar is hidden.
-   * At either end the page keeps scrolling, so the carousel never traps the wheel.
-   *
-   * @param event Wheel event on the carousel.
-   */
-  protected onCardsWheel(event: WheelEvent): void {
-    const cards = event.currentTarget as HTMLElement;
-    const furthest = cards.scrollWidth - cards.clientWidth;
-    const sideways = Math.abs(event.deltaX) > Math.abs(event.deltaY);
-
-    if (sideways || furthest <= 0 || atCarouselEdge(cards, event, furthest)) {
-      return;
-    }
-
-    event.preventDefault();
-    const target = cards.scrollLeft + wheelDelta(event);
-    cards.scrollLeft = Math.min(furthest, Math.max(0, target));
-  }
-
-  /**
-   * Starts a possible carousel drag. Touch and pen already pan natively, so this only
-   * covers the mouse.
-   *
-   * @param event Pointer press on the carousel.
-   */
-  protected onCardsPointerDown(event: PointerEvent): void {
-    const cards = this.cards()?.nativeElement;
-    const grabbable = cards && cards.scrollWidth > cards.clientWidth;
-
-    if (event.pointerType !== 'mouse' || event.button !== 0 || !grabbable) {
-      return;
-    }
-
-    this.dragPointer = event.pointerId;
-    this.dragStartX = event.clientX;
-    this.dragStartScroll = cards.scrollLeft;
-    this.dragged = false;
-  }
-
-  /**
-   * Scrolls the carousel along with the pointer once the drag threshold is passed.
-   *
-   * @param event Pointer movement on the carousel.
-   */
-  protected onCardsPointerMove(event: PointerEvent): void {
-    const cards = this.cards()?.nativeElement;
-    if (!cards || event.pointerId !== this.dragPointer) {
-      return;
-    }
-
-    const moved = event.clientX - this.dragStartX;
-    if (!this.dragged && !this.beginDrag(cards, event, moved)) {
-      return;
-    }
-
-    cards.scrollLeft = this.dragStartScroll - moved;
-  }
-
-  /**
-   * Starts the drag once the pointer has travelled far enough. Capturing the pointer
-   * keeps the drag alive when it leaves the carousel.
-   *
-   * @param cards The carousel element.
-   * @param event Pointer movement on the carousel.
-   * @param moved Distance travelled since the press, in pixels.
-   * @returns True once the drag is running.
-   */
-  private beginDrag(cards: HTMLElement, event: PointerEvent, moved: number): boolean {
-    if (Math.abs(moved) < Surveys.DRAG_THRESHOLD) {
-      return false;
-    }
-
-    this.dragged = true;
-    this.dragging.set(true);
-    cards.setPointerCapture(event.pointerId);
-    return true;
-  }
-
-  /**
-   * Ends a carousel drag. The dragged flag stays set on purpose, the click that follows
-   * the drag still has to be caught.
-   *
-   * @param event Pointer release or cancel on the carousel.
-   */
-  protected onCardsPointerEnd(event: PointerEvent): void {
-    const cards = this.cards()?.nativeElement;
-    if (!cards || event.pointerId !== this.dragPointer) {
-      return;
-    }
-
-    if (cards.hasPointerCapture(event.pointerId)) {
-      cards.releasePointerCapture(event.pointerId);
-    }
-
-    this.dragPointer = null;
-    this.dragging.set(false);
-  }
-
-  /**
-   * Sizes and positions the carousel thumb. Runs after every render and on every
-   * carousel scroll, so the thumb is ready before the first interaction.
-   */
-  protected measureCards(): void {
-    const cards = this.cards()?.nativeElement;
-    if (!cards) {
-      return;
-    }
-
-    const track = cards.clientWidth;
-    const scrollable = cards.scrollWidth - track;
-    this.cardsScrollable.set(scrollable > 0);
-
-    if (scrollable > 0) {
-      this.placeCardsThumb(cards, track, scrollable);
-    }
-  }
-
-  /**
-   * Sizes the carousel thumb and moves it to the current scroll position.
-   *
-   * @param cards The carousel element.
-   * @param track Visible width of the carousel, in pixels.
-   * @param scrollable Width that is scrollable beyond the track, in pixels.
-   */
-  private placeCardsThumb(cards: HTMLElement, track: number, scrollable: number): void {
-    const width = Math.max((track / cards.scrollWidth) * track, Surveys.MIN_THUMB_SIZE);
-    this.cardsThumbWidth.set(width);
-    this.cardsThumbLeft.set((cards.scrollLeft / scrollable) * (track - width));
-  }
-
-  /**
    * Measures the height the first {@link LIST_VISIBLE_COUNT} surveys actually take up
    * and offers it to the stylesheet. A fixed row height cuts the last visible row in
    * half as soon as a title wraps onto a second line, measuring the cards keeps the box
@@ -297,17 +153,29 @@ export class Surveys {
     if (!list) {
       return;
     }
-
-    const surveys = list.querySelectorAll<HTMLElement>('.survey');
-    const last = surveys[LIST_VISIBLE_COUNT - 1];
-
-    if (!last) {
+    const height = this.visibleListHeight(list);
+    if (height === null) {
       list.style.removeProperty('--list-max-height');
       return;
     }
-
-    const height = last.offsetTop + last.offsetHeight - surveys[0].offsetTop;
     list.style.setProperty('--list-max-height', `${height}px`);
+  }
+
+  /**
+   * Height of the first {@link LIST_VISIBLE_COUNT} surveys, plus a peek at the next one
+   * while there is more to scroll to.
+   *
+   * @param list The list element.
+   * @returns The height in pixels, or null when the list is short enough to show whole.
+   */
+  private visibleListHeight(list: HTMLElement): number | null {
+    const surveys = list.querySelectorAll<HTMLElement>('.survey');
+    const last = surveys[LIST_VISIBLE_COUNT - 1];
+    if (!last) {
+      return null;
+    }
+    const height = last.offsetTop + last.offsetHeight - surveys[0].offsetTop;
+    return surveys.length > LIST_VISIBLE_COUNT ? height + LIST_PEEK_PX : height;
   }
 
   /**
@@ -315,25 +183,33 @@ export class Surveys {
    * titles wrap differently. Height changes are ignored, those are the result of the
    * measurement itself and would otherwise feed back into it.
    *
-   * @param destroyRef Used to disconnect the observer with the component.
+   * @param onCleanup Disconnects the observer before the effect runs again or the
+   *   component goes away.
    */
-  private watchListWidth(destroyRef: DestroyRef): void {
+  private watchListWidth(onCleanup: (fn: () => void) => void): void {
     const list = this.list()?.nativeElement;
     if (!list || typeof ResizeObserver === 'undefined') {
       return;
     }
 
-    const observer = new ResizeObserver(() => {
-      if (list.clientWidth === this.listWidth) {
-        return;
-      }
-
-      this.listWidth = list.clientWidth;
-      this.measureList();
-    });
-
+    const observer = new ResizeObserver(() => this.onListResize(list));
     observer.observe(list);
-    destroyRef.onDestroy(() => observer.disconnect());
+    onCleanup(() => observer.disconnect());
+  }
+
+  /**
+   * Re-measures the list after a width change, ignoring the height changes the
+   * measurement itself produces.
+   *
+   * @param list The list element.
+   */
+  private onListResize(list: HTMLElement): void {
+    if (list.clientWidth === this.listWidth) {
+      return;
+    }
+
+    this.listWidth = list.clientWidth;
+    this.measureList();
   }
 
   /**
@@ -439,19 +315,30 @@ export class Surveys {
   }
 
   /**
-   * Keeps the carousel thumb and the list height measured and swallows the click that
-   * ends a drag.
+   * Keeps carousel and list measured, and arms the two listeners that cannot be bound
+   * in the template: the click that ends a drag and the width of the list.
    *
-   * Angular has no capture phase binding, so that listener is registered by hand and
-   * sits in front of the routerLink of the card.
+   * Both elements only exist once the surveys have loaded, so the effects wait for them
+   * instead of running after the first render.
    */
   constructor() {
     const destroyRef = inject(DestroyRef);
     destroyRef.onDestroy(() => clearTimeout(this.hideScrollbar));
 
+    this.keepMeasured();
+    effect((onCleanup) => this.carousel.swallowClicks(onCleanup));
+    effect((onCleanup) => this.watchListWidth(onCleanup));
+  }
+
+  /**
+   * Re-measures carousel and list after every render that changed their contents, and
+   * once more when the real font has replaced the fallback, whose titles may wrap at a
+   * different word.
+   */
+  private keepMeasured(): void {
     afterRenderEffect(() => {
       this.endingSoon();
-      this.measureCards();
+      this.carousel.measure();
     });
 
     afterRenderEffect(() => {
@@ -459,72 +346,6 @@ export class Surveys {
       this.measureList();
     });
 
-    afterNextRender(() => {
-      this.swallowDragClicks(destroyRef);
-      this.watchListWidth(destroyRef);
-
-      // The first measurement runs on the fallback font, whose titles may wrap at a
-      // different word than the real one.
-      void document.fonts?.ready.then(() => this.measureList());
-    });
+    afterNextRender(() => void document.fonts?.ready.then(() => this.measureList()));
   }
-
-  /**
-   * Catches the click a drag ends with, so the grabbed card does not navigate.
-   *
-   * Angular has no capture phase binding, so the listener is registered by hand and
-   * sits in front of the routerLink of the card.
-   *
-   * @param destroyRef Used to remove the listener with the component.
-   */
-  private swallowDragClicks(destroyRef: DestroyRef): void {
-    const cards = this.cards()?.nativeElement;
-    if (!cards) {
-      return;
-    }
-
-    const swallow = (event: MouseEvent) => this.swallowIfDragged(event);
-    cards.addEventListener('click', swallow, true);
-    destroyRef.onDestroy(() => cards.removeEventListener('click', swallow, true));
-  }
-
-  /**
-   * Stops a click that came out of a drag, and arms the carousel for the next one.
-   *
-   * @param event Click on the carousel.
-   */
-  private swallowIfDragged(event: MouseEvent): void {
-    if (this.dragged) {
-      event.preventDefault();
-      event.stopPropagation();
-      this.dragged = false;
-    }
-  }
-}
-
-/**
- * Tells whether the carousel is already at the end the wheel points to, so the page
- * keeps scrolling instead of the carousel trapping the wheel.
- *
- * @param cards The carousel element.
- * @param event Wheel event on the carousel.
- * @param furthest Width that is scrollable beyond the track, in pixels.
- * @returns True at the matching end of the carousel.
- */
-function atCarouselEdge(cards: HTMLElement, event: WheelEvent, furthest: number): boolean {
-  const atStart = event.deltaY < 0 && cards.scrollLeft <= 0;
-  const atEnd = event.deltaY > 0 && cards.scrollLeft >= furthest;
-  return atStart || atEnd;
-}
-
-/**
- * Reads the wheel travel in pixels. Firefox reports whole lines rather than pixels.
- *
- * @param event Wheel event on the carousel.
- * @returns Distance to scroll, in pixels.
- */
-function wheelDelta(event: WheelEvent): number {
-  return event.deltaMode === WheelEvent.DOM_DELTA_LINE
-    ? event.deltaY * LINE_HEIGHT_PX
-    : event.deltaY;
 }

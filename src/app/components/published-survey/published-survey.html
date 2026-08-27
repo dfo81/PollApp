@@ -4,7 +4,9 @@
       <div class="status-hl-box">
         <div class="status">
           <span>{{ running() ? 'Published' : 'Closed' }}</span>
-          <img src="assets/icons/exit_light.svg" alt="" />
+          <a class="exit" routerLink="/" aria-label="Back to the survey overview">
+            <img src="assets/icons/exit_light.svg" alt="" />
+          </a>
         </div>
         <div class="date">
           <span>{{ deadline() }}</span>
@@ -70,12 +72,14 @@
         <p class="state error">{{ message }}</p>
       }
 
-      @if (submitted()) {
-        <p class="state done">Thanks! Your answers were saved.</p>
-      } @else if (!running()) {
+      @if (!running()) {
         <p class="state">This survey has ended — the results are final.</p>
       } @else if (survey().questions.length > 0) {
-        <button class="btn-primary" [disabled]="!hasSelection() || submitting()" (click)="submit()">
+        <button
+          class="btn-primary"
+          [disabled]="!hasSelection() || submitting() || submitted()"
+          (click)="submit()"
+        >
           {{ submitting() ? 'Saving …' : 'Complete survey' }}
           <img src="assets/icons/check_checked_purple.svg" alt="" />
         </button>

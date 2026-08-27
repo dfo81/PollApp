@@ -28,7 +28,8 @@
           justify-content: space-between;
           padding-right: 10px;
 
-          img {
+          .exit {
+            display: flex;
             cursor: pointer;
 
             @media (min-width: 1024px) {
@@ -165,11 +166,6 @@
 
       &.error {
         color: #b3261e;
-      }
-
-      &.done {
-        font-weight: 700;
-        color: #ee9236;
       }
     }
 

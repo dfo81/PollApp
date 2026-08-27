@@ -56,46 +56,15 @@
             }
           </div>
 
-          <div class="drop-down" #categoryField>
-            <button
-              class="drop-down-toggle"
-              type="button"
-              aria-haspopup="listbox"
-              [class.invalid]="attempted() && categoryMissing()"
-              [attr.aria-expanded]="categoryOpen()"
-              [attr.aria-activedescendant]="activeCategoryId()"
-              (click)="toggleCategory()"
-              (keydown)="onCategoryKeydown($event)"
-            >
-              <span>{{ category() ?? 'Choose category' }}</span>
-              <img src="assets/icons/arrow_drop_down_white.svg" alt="" />
-            </button>
+          <app-category-select
+            [value]="category()"
+            [invalid]="attempted() && categoryMissing()"
+            (valueChange)="category.set($event)"
+          />
 
-            @if (categoryOpen()) {
-              <ul class="dropdown-menu" role="listbox">
-                @for (name of categories; track name) {
-                  <li>
-                    <button
-                      type="button"
-                      role="option"
-                      tabindex="-1"
-                      [id]="'category-option-' + $index"
-                      [attr.aria-selected]="category() === name"
-                      [class.selected]="category() === name"
-                      [class.active]="activeCategoryIndex() === $index"
-                      (click)="selectCategory(name)"
-                    >
-                      {{ name }}
-                    </button>
-                  </li>
-                }
-              </ul>
-            }
-
-            @if (attempted() && categoryMissing()) {
-              <p class="field-error">Please pick a category.</p>
-            }
-          </div>
+          @if (attempted() && categoryMissing()) {
+            <p class="field-error">Please pick a category.</p>
+          }
         </div>
       </div>
       <div class="description-frame">

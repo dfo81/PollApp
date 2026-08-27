@@ -17,6 +17,17 @@ interface DayCell {
 /** Weekday headers of the grid, Monday first, in the browser's language. */
 const WEEKDAYS = buildWeekdays();
 
+/** How many days the arrow keys move the cursor. */
+const CURSOR_STEPS: Record<string, number> = {
+  ArrowLeft: -1,
+  ArrowRight: 1,
+  ArrowUp: -7,
+  ArrowDown: 7,
+};
+
+/** How many months PageUp and PageDown move the grid. */
+const MONTH_STEPS: Record<string, number> = { PageUp: -1, PageDown: 1 };
+
 /**
  * Date field with a calendar of its own. It replaces `<input type="date">`, whose popup
  * is drawn by the browser outside the document and therefore cannot be styled.
@@ -87,7 +98,6 @@ export class DatePicker {
     const today = toIso(startOfDay(new Date()));
     const month = cursor.getMonth();
 
-    // Back up to the Monday on or before the first of the month, then walk six weeks.
     const first = new Date(cursor.getFullYear(), month, 1);
     const start = addDays(first, -mondayOffset(first));
 
@@ -153,66 +163,104 @@ export class DatePicker {
    */
   protected onKeydown(event: KeyboardEvent): void {
     if (!this.open()) {
-      // Enter and Space reach the button's own click handler, which opens the calendar.
-      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-        event.preventDefault();
-        this.openCalendar();
-      }
+      this.onClosedKeydown(event);
       return;
     }
 
-    switch (event.key) {
-      case 'ArrowLeft':
-        this.moveCursor(event, -1);
-        return;
-      case 'ArrowRight':
-        this.moveCursor(event, 1);
-        return;
-      case 'ArrowUp':
-        this.moveCursor(event, -7);
-        return;
-      case 'ArrowDown':
-        this.moveCursor(event, 7);
-        return;
-      case 'PageUp':
-        event.preventDefault();
-        this.shiftMonth(-1);
-        return;
-      case 'PageDown':
-        event.preventDefault();
-        this.shiftMonth(1);
-        return;
-      case 'Home':
-        this.moveCursor(event, -mondayOffset(this.cursor()));
-        return;
-      case 'End':
-        this.moveCursor(event, 6 - mondayOffset(this.cursor()));
-        return;
+    const days = CURSOR_STEPS[event.key];
+    if (days !== undefined) {
+      this.moveCursor(event, days);
+      return;
+    }
 
-      case 'Enter':
-      case ' ': {
-        // Without this the key would also fire a click and toggle the calendar shut.
-        event.preventDefault();
-        const iso = toIso(this.cursor());
-        const day = this.weeks()
-          .flat()
-          .find((cell) => cell.iso === iso);
-        if (day) {
-          this.pick(day);
-        }
-        return;
-      }
+    this.onOpenKeydown(event);
+  }
 
-      case 'Escape':
-        // Stops the dialog around the form from closing along with the calendar.
-        event.preventDefault();
-        event.stopPropagation();
-        this.close();
-        return;
+  /**
+   * Handles the keys that open the calendar. Enter and Space are left to the button,
+   * whose own click handler opens it.
+   *
+   * @param event Key press on the trigger button.
+   */
+  private onClosedKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') {
+      return;
+    }
 
-      case 'Tab':
-        this.close();
-        return;
+    event.preventDefault();
+    this.openCalendar();
+  }
+
+  /**
+   * Handles the keys of an open calendar that do not move the cursor by a fixed number
+   * of days.
+   *
+   * @param event Key press on the trigger button.
+   */
+  private onOpenKeydown(event: KeyboardEvent): void {
+    const months = MONTH_STEPS[event.key];
+    if (months !== undefined) {
+      event.preventDefault();
+      this.shiftMonth(months);
+      return;
+    }
+    if (event.key === 'Home' || event.key === 'End') {
+      this.moveCursor(event, this.weekEdgeStep(event.key));
+      return;
+    }
+    this.onCommitKeydown(event);
+  }
+
+  /**
+   * Distance from the cursor to the start or the end of its week.
+   *
+   * @param key Either Home or End.
+   * @returns Number of days to move, negative for backwards.
+   */
+  private weekEdgeStep(key: string): number {
+    const offset = mondayOffset(this.cursor());
+    return key === 'Home' ? -offset : 6 - offset;
+  }
+
+  /**
+   * Takes over the highlighted day, or hands the key on to the ones that close.
+   *
+   * @param event Key press on the trigger button.
+   */
+  private onCommitKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.pickCursor();
+      return;
+    }
+    this.onCloseKeydown(event);
+  }
+
+  /**
+   * Closes the calendar on Escape and Tab. Escape is kept from bubbling, otherwise the
+   * dialog around the form would close along with it.
+   *
+   * @param event Key press on the trigger button.
+   */
+  private onCloseKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+    } else if (event.key !== 'Tab') {
+      return;
+    }
+    this.close();
+  }
+
+  /** Picks the day the keyboard cursor sits on. */
+  private pickCursor(): void {
+    const iso = toIso(this.cursor());
+    const day = this.weeks()
+      .flat()
+      .find((cell) => cell.iso === iso);
+
+    if (day) {
+      this.pick(day);
     }
   }
 
@@ -303,7 +351,6 @@ function fromIso(iso: string): Date | null {
 
 /** Short weekday names, Monday first, in the browser's language. */
 function buildWeekdays(): { short: string; long: string }[] {
-  // 2024-01-01 was a Monday, so seven days from there give a full week in order.
   const monday = new Date(2024, 0, 1);
   return Array.from({ length: 7 }, (_, index) => {
     const date = addDays(monday, index);

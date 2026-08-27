@@ -1,9 +1,12 @@
-// Demo content for the seed script: one survey per category, each with its own questions,
-// answers and a plausible vote distribution. `endsInDays` is relative to the seeding run.
-//
-// Votes can only be seeded for running surveys — the RLS policy rejects votes on a survey
-// whose ends_at has passed, so every survey here ends in the future.
-
+/**
+ * Demo content for the seed script: one entry per survey with its questions, answers and
+ * a vote distribution.
+ *
+ * `endsInDays` is relative to the seeding run. A negative value makes a survey that has
+ * already ended; those are seeded without votes, because the RLS policy
+ * "vote on running surveys" rejects any vote once `ends_at` has passed and anon may not
+ * update a survey afterwards to backdate it.
+ */
 export const DEMO_SURVEYS = [
   {
     title: 'Team Event 2026 – Let´s Plan It Together',
@@ -101,7 +104,7 @@ export const DEMO_SURVEYS = [
       'The next game night needs a plan. Pick the games and the format you would actually ' +
       'show up for.',
     category: 'Gaming & Entertainment',
-    endsInDays: 6,
+    endsInDays: -9,
     questions: [
       {
         text: 'Which games should be on the table?',
@@ -241,6 +244,144 @@ export const DEMO_SURVEYS = [
           { text: 'A time-boxed trial per team', votes: 25 },
           { text: 'One team decides for everyone', votes: 6 },
           { text: 'A written proposal and a vote', votes: 18 },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Summer party 2026: which location won?',
+    description:
+      'The vote on this year´s summer party is closed. Thanks to everyone who took part — the ' +
+      'result decided where we went.',
+    category: 'Team Activities',
+    endsInDays: -23,
+    questions: [
+      {
+        text: 'Where should the summer party take place?',
+        allowMultiple: false,
+        options: [
+          { text: 'The lake house outside town', votes: 0 },
+          { text: 'A rooftop bar in the centre', votes: 0 },
+          { text: 'The courtyard behind the office', votes: 0 },
+          { text: 'A day trip with a barbecue', votes: 0 },
+        ],
+      },
+      {
+        text: 'How long should the evening run?',
+        allowMultiple: false,
+        options: [
+          { text: 'Afternoon into the evening', votes: 0 },
+          { text: 'Evening only', votes: 0 },
+          { text: 'The whole day', votes: 0 },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'How did your onboarding go?',
+    description:
+      'A look back at the first weeks of our latest joiners. The survey has closed, the answers ' +
+      'feed into the next round of the onboarding plan.',
+    category: 'Education & Learning',
+    endsInDays: -4,
+    questions: [
+      {
+        text: 'What helped you most in your first weeks?',
+        allowMultiple: true,
+        options: [
+          { text: 'A buddy to ask anything', votes: 0 },
+          { text: 'A written onboarding checklist', votes: 0 },
+          { text: 'Pairing on a real task early', votes: 0 },
+          { text: 'Regular check-ins with the lead', votes: 0 },
+        ],
+      },
+      {
+        text: 'What was missing?',
+        allowMultiple: true,
+        options: [
+          { text: 'An overview of who does what', votes: 0 },
+          { text: 'Access to tools on day one', votes: 0 },
+          { text: 'More context on the product', votes: 0 },
+          { text: 'Nothing, it went well', votes: 0 },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Movie night: what should we watch?',
+    description:
+      'The projector is booked for next month. Pick the genre, the evening and how we handle ' +
+      'the snack budget.',
+    category: 'Gaming & Entertainment',
+    endsInDays: 9,
+    questions: [
+      {
+        text: 'Which genre should we start with?',
+        allowMultiple: true,
+        options: [
+          { text: 'Science fiction', votes: 21 },
+          { text: 'Comedy', votes: 26 },
+          { text: 'Documentary', votes: 9 },
+          { text: 'Animation', votes: 17 },
+          { text: 'Thriller', votes: 13 },
+        ],
+      },
+      {
+        text: 'Which evening suits you best?',
+        allowMultiple: false,
+        options: [
+          { text: 'Tuesday', votes: 7 },
+          { text: 'Wednesday', votes: 12 },
+          { text: 'Thursday', votes: 24 },
+          { text: 'Friday', votes: 18 },
+        ],
+      },
+      {
+        text: 'How should we handle snacks?',
+        allowMultiple: false,
+        options: [
+          { text: 'Everyone brings something', votes: 22 },
+          { text: 'Order in together', votes: 19 },
+          { text: 'Company covers it', votes: 25 },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'How should we run our retrospectives?',
+    description:
+      'Our retro format has not changed in two years. Tell us what is worth keeping and what ' +
+      'should be tried differently.',
+    category: 'Education & Learning',
+    endsInDays: 27,
+    questions: [
+      {
+        text: 'How often should we hold a retro?',
+        allowMultiple: false,
+        options: [
+          { text: 'Every sprint', votes: 28 },
+          { text: 'Every second sprint', votes: 14 },
+          { text: 'Once a month', votes: 11 },
+          { text: 'Only when something went wrong', votes: 4 },
+        ],
+      },
+      {
+        text: 'What would make retros more useful?',
+        allowMultiple: true,
+        options: [
+          { text: 'A rotating facilitator', votes: 20 },
+          { text: 'Following up on last time´s actions', votes: 31 },
+          { text: 'A shorter, tighter format', votes: 16 },
+          { text: 'Collecting notes during the sprint', votes: 23 },
+        ],
+      },
+      {
+        text: 'How long should a retro take?',
+        allowMultiple: false,
+        options: [
+          { text: '30 minutes', votes: 18 },
+          { text: '45 minutes', votes: 26 },
+          { text: 'A full hour', votes: 10 },
         ],
       },
     ],

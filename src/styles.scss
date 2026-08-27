@@ -100,7 +100,6 @@ button {
     }
 }
 
-// Folds the icon of a button away and unfolds it on hover.
 @mixin reveal-icon {
     gap: 0;
     transition: background-color 0.2s ease-in-out;
@@ -124,14 +123,12 @@ button {
     }
 }
 
-// From the tablet breakpoint on. Below it the icon simply sits next to the label.
 .btn-reveal {
     @media (min-width: 768px) {
         @include reveal-icon;
     }
 }
 
-// Same effect, but held back until the desktop layout.
 .btn-reveal-desktop {
     @media (min-width: 1024px) {
         @include reveal-icon;
@@ -175,8 +172,6 @@ button {
             font-weight: 700;
         }
 
-        // Keyboard cursor, set through arrow keys. Kept apart from .selected so it
-        // stays readable which option is chosen and which one is merely highlighted.
         &.active {
             background-color: var(--surface-light-hover);
             outline: 2px solid var(--primary-orange);

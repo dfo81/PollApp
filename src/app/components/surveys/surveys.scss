@@ -255,8 +255,6 @@ $surface-subtle: #d9d9d91f;
       }
     }
 
-    // One column that runs the full list, the page itself scrolls it. Only the wide
-    // layout below caps the box and scrolls on its own.
     .other {
       --row-height: 143px;
       --row-gap: 16px;
@@ -276,9 +274,6 @@ $surface-subtle: #d9d9d91f;
         --row-height: 118px;
         --visible-rows: 3;
 
-        // Room below the last row for the card shadow, which reaches 8px past the card.
-        // Stays under the row gap, so the space it opens up at the top of the list is
-        // gap rather than a sliver of the next row.
         --shadow-gutter: 8px;
 
         grid-template-columns: repeat(2, 1fr);
@@ -286,9 +281,6 @@ $surface-subtle: #d9d9d91f;
         padding-right: 24px;
         padding-bottom: var(--shadow-gutter);
 
-        // The component measures the first six cards and pins the box to their real
-        // height, so a title that wraps grows the box instead of cutting the last row
-        // in half. The row count only carries the box until that measurement lands.
         --fallback-rows: calc(
           var(--visible-rows) * var(--row-height) + (var(--visible-rows) - 1) * var(--row-gap)
         );

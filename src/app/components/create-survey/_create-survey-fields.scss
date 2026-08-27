@@ -1,0 +1,299 @@
+@use 'create-survey-vars' as *;
+
+.input-fields {
+  display: flex;
+  flex-direction: column;
+  padding: 40px 10px;
+  background-color: #8e709929;
+  border-radius: 5px 80px 5px 5px;
+  font-size: 18px;
+  color: #fff;
+
+  .input-title,
+  .answer-title {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  input,
+  textarea {
+    border: none;
+    border-radius: 5px 20px 5px 5px;
+    padding: 6px 10px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    color: var(--bg-primary);
+  }
+
+  input {
+    height: 37px;
+  }
+
+  textarea {
+    height: 108px;
+    resize: vertical;
+  }
+
+  .field {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 8px;
+    row-gap: 4px;
+    margin-bottom: 10px;
+
+    .field-label {
+      grid-column: 1;
+      grid-row: 1;
+      align-self: center;
+    }
+
+    .field-delete {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: end;
+      align-self: flex-start;
+      padding: 4px 0;
+      cursor: pointer;
+    }
+
+    input,
+    textarea {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+
+    @media (min-width: 1024px) {
+      .field-delete {
+        grid-row: 2;
+      }
+
+      input,
+      textarea {
+        grid-column: 1;
+      }
+    }
+  }
+
+  .date-field {
+    grid-template-columns: minmax(0, $date-field-width) max-content;
+    justify-content: start;
+
+    .field-delete {
+      grid-row: 2;
+      align-self: center;
+    }
+
+    app-date-picker {
+      grid-column: 1;
+      max-width: $date-field-width;
+    }
+
+    @media (max-width: $narrow-max) {
+      grid-template-columns: minmax(0, 1fr) max-content;
+
+      .field-delete {
+        grid-row: 1;
+      }
+
+      app-date-picker {
+        grid-column: 1 / -1;
+        max-width: none;
+      }
+    }
+  }
+
+  .date-category-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    app-category-select {
+      order: -1;
+    }
+
+    @media (min-width: 1024px) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) max-content;
+      column-gap: 8px;
+      row-gap: 4px;
+      align-items: start;
+
+      .date-field {
+        display: contents;
+
+        .field-label {
+          grid-column: 1;
+          grid-row: 1;
+          align-self: center;
+        }
+
+        app-date-picker {
+          grid-column: 1;
+          grid-row: 2;
+          max-width: none;
+        }
+
+        .field-delete {
+          grid-column: 2;
+          grid-row: 2;
+          justify-self: start;
+          align-self: center;
+        }
+
+        .field-error {
+          grid-column: 1 / -1;
+          grid-row: 3;
+        }
+      }
+
+      app-category-select {
+        order: 0;
+        grid-column: 2;
+        grid-row: 1;
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .info-frame,
+  .description-frame {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .description-frame {
+    margin-top: 4px;
+  }
+
+  app-category-select {
+    margin-bottom: 12px;
+  }
+
+  .qna-box {
+    display: flex;
+    flex-direction: column;
+    margin-top: 24px;
+    gap: 6px;
+
+    .delete-icon {
+      cursor: pointer;
+    }
+
+    .answer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+
+      input {
+        flex: 1;
+        min-width: 0;
+        margin-bottom: 0;
+      }
+
+      @media (max-width: $narrow-max) {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) max-content;
+        column-gap: 8px;
+        row-gap: 4px;
+
+        > span {
+          grid-column: 1;
+          grid-row: 1;
+          align-self: center;
+        }
+
+        .delete-icon {
+          grid-column: 2;
+          grid-row: 1;
+          justify-self: end;
+          align-self: center;
+        }
+
+        input {
+          grid-column: 1 / -1;
+          grid-row: 2;
+        }
+      }
+    }
+
+    .answers-checkbox {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+
+      span {
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  .add-button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 12px auto 72px 12px;
+    padding: 8px 12px;
+    background-color: transparent;
+    border-radius: 0;
+    border-bottom: 1px solid #fff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #faf5fe33;
+    }
+  }
+
+  .add-question {
+    margin-left: 12px;
+    margin-right: auto;
+    padding: 8px 12px;
+    background-color: $button-soft;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+
+    &:hover {
+      background-color: $button-soft-hover;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 40px;
+    align-items: start;
+    padding: 40px 24px;
+
+    .description-frame {
+      margin-top: 0;
+    }
+
+    > .add-question {
+      justify-self: start;
+      align-self: start;
+    }
+  }
+}
+
+.field-error {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--secondary-orange);
+}
+
+.input-fields {
+  input.invalid,
+  textarea.invalid {
+    outline: 2px solid var(--primary-orange);
+  }
+
+  .answers-checkbox {
+    gap: 6px;
+    cursor: pointer;
+  }
+}

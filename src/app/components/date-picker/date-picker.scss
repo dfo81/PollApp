@@ -1,4 +1,3 @@
-// Mid purple of the design, as used behind the form panels (#8e709929 in .input-fields).
 $arrow-purple: #44344a;
 
 :host {
@@ -9,7 +8,6 @@ $arrow-purple: #44344a;
   position: relative;
 }
 
-// Matches the form fields of .input-fields: same height, radius, padding and type.
 .date-trigger {
   display: flex;
   align-items: center;
@@ -34,8 +32,6 @@ $arrow-purple: #44344a;
     flex-shrink: 0;
     width: 24px;
     height: 24px;
-    // The visible purple of the design - #35273A is technically --primary-purple, but
-    // reads as black at this size. This tone is the one behind the form panels.
     color: $arrow-purple;
   }
 }
@@ -83,7 +79,6 @@ $arrow-purple: #44344a;
       background-color: var(--surface-light-hover);
     }
 
-    // The arrow points down, so it is turned into a left and a right chevron.
     .arrow {
       width: 20px;
       height: 20px;
@@ -133,7 +128,6 @@ $arrow-purple: #44344a;
     background-color: var(--surface-light-hover);
   }
 
-  // Days of the neighbouring months, kept visible for context but toned down.
   &.outside {
     opacity: 0.35;
   }
@@ -153,8 +147,6 @@ $arrow-purple: #44344a;
     font-weight: 700;
   }
 
-  // Keyboard cursor, moved with the arrow keys. Kept apart from .selected so it stays
-  // readable which day is chosen and which one is merely highlighted.
   &.active {
     outline: 2px solid var(--primary-orange);
     outline-offset: -2px;

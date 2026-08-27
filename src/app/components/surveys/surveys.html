@@ -11,13 +11,13 @@
       <div
         class="cards"
         #cards
-        [class.dragging]="dragging()"
-        (wheel)="onCardsWheel($event)"
-        (scroll)="measureCards()"
-        (pointerdown)="onCardsPointerDown($event)"
-        (pointermove)="onCardsPointerMove($event)"
-        (pointerup)="onCardsPointerEnd($event)"
-        (pointercancel)="onCardsPointerEnd($event)"
+        [class.dragging]="carousel.dragging()"
+        (wheel)="carousel.onWheel($event)"
+        (scroll)="carousel.measure()"
+        (pointerdown)="carousel.onPointerDown($event)"
+        (pointermove)="carousel.onPointerMove($event)"
+        (pointerup)="carousel.onPointerEnd($event)"
+        (pointercancel)="carousel.onPointerEnd($event)"
       >
         @for (survey of endingSoon(); track survey.id) {
           <div class="card" [routerLink]="['/survey', survey.id]">
@@ -32,12 +32,12 @@
         }
       </div>
 
-      @if (cardsScrollable()) {
+      @if (carousel.scrollable()) {
         <div class="cards-scrollbar" aria-hidden="true">
           <div
             class="thumb"
-            [style.left.px]="cardsThumbLeft()"
-            [style.width.px]="cardsThumbWidth()"
+            [style.left.px]="carousel.thumbLeft()"
+            [style.width.px]="carousel.thumbWidth()"
           ></div>
         </div>
       }

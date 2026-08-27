@@ -1,0 +1,36 @@
+<div class="drop-down" #field>
+  <button
+    class="drop-down-toggle"
+    type="button"
+    aria-haspopup="listbox"
+    [class.invalid]="invalid()"
+    [attr.aria-expanded]="open()"
+    [attr.aria-activedescendant]="activeId()"
+    (click)="toggle()"
+    (keydown)="onKeydown($event)"
+  >
+    <span>{{ value() ?? 'Choose category' }}</span>
+    <img src="assets/icons/arrow_drop_down_white.svg" alt="" />
+  </button>
+
+  @if (open()) {
+    <ul class="dropdown-menu" role="listbox">
+      @for (name of categories; track name) {
+        <li>
+          <button
+            type="button"
+            role="option"
+            tabindex="-1"
+            [id]="'category-option-' + $index"
+            [attr.aria-selected]="value() === name"
+            [class.selected]="value() === name"
+            [class.active]="activeIndex() === $index"
+            (click)="select(name)"
+          >
+            {{ name }}
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</div>

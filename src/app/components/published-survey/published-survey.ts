@@ -1,4 +1,5 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { SurveyService } from '../../core/survey-service';
 import {
   endLabel,
@@ -17,7 +18,7 @@ type Selection = ReadonlySet<string>;
  */
 @Component({
   selector: 'app-published-survey',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './published-survey.html',
   styleUrl: './published-survey.scss',
 })

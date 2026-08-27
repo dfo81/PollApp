@@ -1,4 +1,5 @@
 import { Component, computed, DestroyRef, inject, input, resource } from '@angular/core';
+import { Router } from '@angular/router';
 import { PublishedSurvey } from '../published-survey/published-survey';
 import { SurveyResults } from '../survey-results/survey-results';
 import { SurveyService } from '../../core/survey-service';
@@ -16,6 +17,7 @@ import { isRunning, QuestionResult, SurveyDetail } from '../../core/survey.model
 })
 export class SurveyView {
   private readonly surveyService = inject(SurveyService);
+  private readonly router = inject(Router);
 
   /** Votes arrive one by one, this collects a burst into a single reload. */
   private static readonly RELOAD_DELAY_MS = 300;
@@ -77,9 +79,9 @@ export class SurveyView {
     return isRunning(survey);
   }
 
-  /** Reloads the results right after the visitor has voted. */
+  /** Sends the visitor back to the overview once their votes are saved. */
   protected onVoted(): void {
-    this.results.reload();
+    void this.router.navigate(['/']);
   }
 
   /** Reloads the results once the incoming votes have settled. */
