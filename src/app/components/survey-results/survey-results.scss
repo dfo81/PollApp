@@ -63,6 +63,24 @@
       }
     }
 
+    // Shown until the first vote is in, see the "no results yet" design.
+    .empty {
+      display: flex;
+      flex-direction: column;
+      gap: 96px;
+      font-size: 20px;
+      font-weight: 700;
+
+      .empty-lead {
+        max-width: 26rem;
+      }
+
+      .empty-note {
+        align-self: center;
+        text-align: center;
+      }
+    }
+
     .results {
       display: flex;
       flex-direction: column;

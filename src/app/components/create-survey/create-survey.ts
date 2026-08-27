@@ -1,7 +1,19 @@
-import { Component, computed, ElementRef, inject, output, signal, viewChild } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  computed,
+  DestroyRef,
+  ElementRef,
+  inject,
+  Injector,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { SurveyService } from '../../core/survey-service';
 import { letter, NewSurvey, SURVEY_CATEGORIES } from '../../core/survey.models';
+import { DatePicker } from '../date-picker/date-picker';
 
 /** One answer of a question that is being drafted. */
 interface DraftAnswer {
@@ -19,6 +31,9 @@ interface DraftQuestion {
   answers: DraftAnswer[];
 }
 
+/** How long the "published" overlay sits over the button before the survey opens. */
+const PUBLISHED_OVERLAY_MS = 1800;
+
 /**
  * Overlay for creating a survey. It validates the draft, writes it to the database and
  * then replaces the form with a confirmation.
@@ -27,7 +42,7 @@ interface DraftQuestion {
  */
 @Component({
   selector: 'app-create-survey',
-  imports: [],
+  imports: [DatePicker],
   templateUrl: './create-survey.html',
   styleUrl: './create-survey.scss',
   host: {
@@ -38,6 +53,15 @@ interface DraftQuestion {
 export class CreateSurvey {
   private readonly surveyService = inject(SurveyService);
   private readonly router = inject(Router);
+
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly injector = inject(Injector);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+
+  constructor() {
+    // The dialog can be dismissed while the overlay still counts down.
+    this.destroyRef.onDestroy(() => clearTimeout(this.viewTimer));
+  }
 
   /** Asks the host to close the overlay. */
   readonly closed = output<void>();
@@ -51,6 +75,9 @@ export class CreateSurvey {
   protected readonly categories = SURVEY_CATEGORIES;
 
   private nextId = 0;
+
+  /** Handle of the timer that opens the new survey after publishing. */
+  private viewTimer: ReturnType<typeof setTimeout> | undefined;
 
   /** Title of the survey, a required field. */
   protected readonly title = signal('');
@@ -70,6 +97,15 @@ export class CreateSurvey {
   /** True while the category dropdown is open. */
   protected readonly categoryOpen = signal(false);
 
+  /** Option the keyboard cursor sits on, -1 while the dropdown is closed. */
+  protected readonly activeCategoryIndex = signal(-1);
+
+  /** Id of the active option, for aria-activedescendant on the toggle. */
+  protected readonly activeCategoryId = computed(() => {
+    const index = this.activeCategoryIndex();
+    return index < 0 ? null : `category-option-${index}`;
+  });
+
   /** True once publishing was attempted, which reveals the validation errors. */
   protected readonly attempted = signal(false);
 
@@ -87,7 +123,10 @@ export class CreateSurvey {
 
   /** Appends an empty question to the draft. */
   protected addQuestion(): void {
-    this.questions.update((questions) => [...questions, this.newQuestion()]);
+    const question = this.newQuestion();
+
+    this.questions.update((questions) => [...questions, question]);
+    this.focusField(`input[data-question-id="${question.id}"]`);
   }
 
   /**
@@ -96,41 +135,79 @@ export class CreateSurvey {
    * @param questionId Id of the question.
    */
   protected addAnswer(questionId: number): void {
+    const answerId = this.nextId++;
+
     this.questions.update((questions) =>
       questions.map((question) =>
         question.id === questionId
-          ? { ...question, answers: [...question.answers, { id: this.nextId++, text: '' }] }
+          ? { ...question, answers: [...question.answers, { id: answerId, text: '' }] }
           : question,
       ),
+    );
+
+    this.focusField(`input[data-answer-id="${answerId}"]`);
+  }
+
+  /**
+   * Puts the caret into a freshly added field, so the form can be filled without
+   * reaching for the mouse. The field only exists once Angular has rendered the new
+   * row, hence the wait for the next render.
+   *
+   * @param selector CSS selector of the field, relative to this component.
+   */
+  private focusField(selector: string): void {
+    afterNextRender(
+      () => {
+        this.host.nativeElement.querySelector<HTMLInputElement>(selector)?.focus();
+      },
+      { injector: this.injector },
     );
   }
 
   /**
-   * Removes a question. A survey keeps at least one, so the template only renders the
-   * delete icon while removing is allowed.
+   * Removes a question, or empties its text field when it is the last one. A survey keeps
+   * at least one question, but the delete icon stays usable either way.
    *
    * @param questionId Id of the question.
    */
   protected removeQuestion(questionId: number): void {
+    if (this.questions().length <= 1) {
+      this.questions.update((questions) =>
+        questions.map((question) =>
+          question.id === questionId ? { ...question, text: '' } : question,
+        ),
+      );
+      return;
+    }
+
     this.questions.update((questions) =>
       questions.filter((question) => question.id !== questionId),
     );
   }
 
   /**
-   * Removes an answer. A question keeps at least two, so the template only renders the
-   * delete icon while removing is allowed.
+   * Removes an answer, or empties its text field when the question is down to its last two.
+   * A question keeps at least two answers, but the delete icon stays usable either way.
    *
    * @param questionId Id of the question the answer belongs to.
    * @param answerId Id of the answer.
    */
   protected removeAnswer(questionId: number, answerId: number): void {
     this.questions.update((questions) =>
-      questions.map((question) =>
-        question.id === questionId
+      questions.map((question) => {
+        if (question.id !== questionId) {
+          return question;
+        }
+
+        return question.answers.length > 2
           ? { ...question, answers: question.answers.filter((answer) => answer.id !== answerId) }
-          : question,
-      ),
+          : {
+              ...question,
+              answers: question.answers.map((answer) =>
+                answer.id === answerId ? { ...answer, text: '' } : answer,
+              ),
+            };
+      }),
     );
   }
 
@@ -158,15 +235,6 @@ export class CreateSurvey {
    */
   protected setTitle(event: Event): void {
     this.title.set(value(event));
-  }
-
-  /**
-   * Takes over the end date.
-   *
-   * @param event Input event of the date field.
-   */
-  protected setEndDate(event: Event): void {
-    this.endDate.set(value(event));
   }
 
   /**
@@ -239,12 +307,80 @@ export class CreateSurvey {
 
   /** Opens or closes the category dropdown. */
   protected toggleCategory(): void {
-    this.categoryOpen.update((open) => !open);
+    if (this.categoryOpen()) {
+      this.closeCategory();
+    } else {
+      this.openCategory();
+    }
+  }
+
+  /** Opens the dropdown with the keyboard cursor on the current category. */
+  private openCategory(): void {
+    const selected = (this.categories as readonly string[]).indexOf(this.category() ?? '');
+    this.activeCategoryIndex.set(selected >= 0 ? selected : 0);
+    this.categoryOpen.set(true);
   }
 
   /** Closes the category dropdown. */
   protected closeCategory(): void {
     this.categoryOpen.set(false);
+    this.activeCategoryIndex.set(-1);
+  }
+
+  /**
+   * Drives the category dropdown from the keyboard. Focus stays on the toggle button and
+   * aria-activedescendant points at the highlighted option, so no focus has to be moved
+   * into the list.
+   *
+   * @param event Key press on the toggle button.
+   */
+  protected onCategoryKeydown(event: KeyboardEvent): void {
+    const open = this.categoryOpen();
+    const count = this.categories.length;
+
+    switch (event.key) {
+      case 'ArrowDown':
+      case 'ArrowUp':
+        event.preventDefault();
+        if (!open) {
+          this.openCategory();
+          return;
+        }
+        this.activeCategoryIndex.update(
+          (index) => (index + (event.key === 'ArrowDown' ? 1 : -1) + count) % count,
+        );
+        return;
+
+      case 'Home':
+      case 'End':
+        if (!open) {
+          return;
+        }
+        event.preventDefault();
+        this.activeCategoryIndex.set(event.key === 'Home' ? 0 : count - 1);
+        return;
+
+      case 'Enter':
+      case ' ': {
+        // While closed the button's own click handler opens the dropdown.
+        if (!open) {
+          return;
+        }
+        // Without this the key would also fire a click and toggle the list shut again.
+        event.preventDefault();
+        const index = this.activeCategoryIndex();
+        if (index >= 0) {
+          this.selectCategory(this.categories[index]);
+        }
+        return;
+      }
+
+      case 'Tab':
+        if (open) {
+          this.closeCategory();
+        }
+        return;
+    }
   }
 
   /**
@@ -345,6 +481,22 @@ export class CreateSurvey {
   );
 
   /**
+   * Today as an ISO day, the earliest end date the field offers. A method rather than a
+   * constant so a dialog left open over midnight still reports the right day.
+   *
+   * @returns Today in the yyyy-mm-dd form the native date input expects.
+   */
+  protected minEndDate(): string {
+    const today = new Date();
+    const month = `${today.getMonth() + 1}`.padStart(2, '0');
+    const day = `${today.getDate()}`.padStart(2, '0');
+
+    // Built from the local parts on purpose: toISOString() would shift the day for
+    // anyone east or west of UTC.
+    return `${today.getFullYear()}-${month}-${day}`;
+  }
+
+  /**
    * Reads the end date field. The native date input hands over an ISO day, the survey
    * runs to the end of it.
    *
@@ -376,6 +528,10 @@ export class CreateSurvey {
     this.saving.set(true);
     await this.save(this.buildDraft());
     this.saving.set(false);
+
+    if (this.createdId() !== null) {
+      this.viewTimer = setTimeout(() => void this.openCreated(), PUBLISHED_OVERLAY_MS);
+    }
   }
 
   /**
@@ -412,8 +568,13 @@ export class CreateSurvey {
     }
   }
 
-  /** Opens the freshly created survey and closes the overlay. */
+  /**
+   * Leaves the confirmation overlay for the new survey. Runs on the timer started by
+   * {@link publish}, and on a click on the overlay itself so it can be skipped.
+   */
   protected async openCreated(): Promise<void> {
+    clearTimeout(this.viewTimer);
+
     const id = this.createdId();
     if (id === null) {
       return;

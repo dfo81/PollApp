@@ -1,4 +1,4 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 import { letter, QuestionResult } from '../../core/survey.models';
 
 /**
@@ -20,6 +20,14 @@ export class SurveyResults {
 
   /** False for a closed survey, whose results are final instead of live. */
   readonly live = input(true);
+
+  /**
+   * True as soon as a single vote is in. The service returns one entry per question
+   * whether or not it was voted on, so an empty array is not what marks a fresh survey.
+   */
+  protected readonly hasVotes = computed(() =>
+    this.results().some((question) => question.totalVotes > 0),
+  );
 
   /** Only used below the desktop breakpoint, where the results are collapsible. */
   protected readonly resultsOpen = signal(false);

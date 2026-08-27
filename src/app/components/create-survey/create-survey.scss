@@ -1,5 +1,9 @@
 $button-soft: #ffb7704d;
 $button-soft-hover: #ffb77099;
+$date-field-width: 250px;
+// Below this the date field and the answer rows stack: label and delete icon on top,
+// the input across the full width underneath.
+$narrow-max: 509.98px;
 
 :host {
   display: block;
@@ -86,8 +90,35 @@ $button-soft-hover: #ffb77099;
     }
   }
 
-  .publish {
-    margin-left: auto;
+  .publish-row {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+
+    // Lets the overlay start beyond the right edge without the dialog gaining a
+    // horizontal scroll area. "clip" leaves the vertical overflow visible, unlike
+    // "hidden" - the overlay is taller than this row and reaches above it.
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+
+  // Sits over the publish button until the home screen takes over. Anchored to the
+  // button's corner and allowed to shrink, the artwork is 357px wide.
+  .publish-overlay {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 357px;
+    max-width: 100%;
+    height: auto;
+    cursor: pointer;
+    animation: publish-overlay-in 260ms cubic-bezier(0.22, 0.8, 0.36, 1) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .publish-overlay {
+      animation: none;
+    }
   }
 }
 
@@ -110,6 +141,10 @@ $button-soft-hover: #ffb77099;
   textarea {
     border: none;
     border-radius: 5px 20px 5px 5px;
+    padding: 6px 10px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    color: var(--bg-primary);
   }
 
   input {
@@ -138,8 +173,9 @@ $button-soft-hover: #ffb77099;
       grid-column: 2;
       grid-row: 1;
       justify-self: end;
-      align-self: center;
-      padding: 0;
+      align-self: flex-start;
+      padding: 4px 0;
+      cursor: pointer;
     }
 
     input,
@@ -160,6 +196,42 @@ $button-soft-hover: #ffb77099;
     }
   }
 
+  .date-field {
+    // .field lays out a "minmax(0, 1fr) auto" grid. Capping column 1 leaves free space
+    // over, and an "auto" track stretches into it - which parks the delete icon of
+    // column 2 at the far right. "max-content" does not stretch, so the icon stays one
+    // column-gap next to the input and the leftover width sits at the end of the row.
+    grid-template-columns: minmax(0, $date-field-width) max-content;
+    justify-content: start;
+
+    // .field parks the delete icon next to the label and only moves it down to the
+    // input on desktop. The date field is narrow enough for them to share a row at
+    // every width, so it gets that layout right away.
+    .field-delete {
+      grid-row: 2;
+      align-self: center;
+    }
+
+    app-date-picker {
+      grid-column: 1;
+      max-width: $date-field-width;
+    }
+
+    @media (max-width: $narrow-max) {
+      grid-template-columns: minmax(0, 1fr) max-content;
+
+      // Back to the layout of .field: icon next to the label, input below it.
+      .field-delete {
+        grid-row: 1;
+      }
+
+      app-date-picker {
+        grid-column: 1 / -1;
+        max-width: none;
+      }
+    }
+  }
+
   .date-category-row {
     display: flex;
     flex-direction: column;
@@ -170,17 +242,48 @@ $button-soft-hover: #ffb77099;
     }
 
     @media (min-width: 1024px) {
-      flex-direction: row;
-      align-items: flex-start;
-      gap: 24px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) max-content;
+      column-gap: 8px;
+      row-gap: 4px;
+      align-items: start;
+
+      // The label and the dropdown share the top row, the date input runs the full
+      // width underneath. "display: contents" drops the .date-field box so its label,
+      // input and delete icon become items of this grid instead of its own.
+      .date-field {
+        display: contents;
+
+        .field-label {
+          grid-column: 1;
+          grid-row: 1;
+          align-self: center;
+        }
+
+        app-date-picker {
+          grid-column: 1;
+          grid-row: 2;
+          max-width: none;
+        }
+
+        .field-delete {
+          grid-column: 2;
+          grid-row: 2;
+          justify-self: start;
+          align-self: center;
+        }
+
+        .field-error {
+          grid-column: 1 / -1;
+          grid-row: 3;
+        }
+      }
 
       .drop-down {
         order: 0;
-      }
-
-      .date-field {
-        flex: 1;
-        min-width: 0;
+        grid-column: 2;
+        grid-row: 1;
+        margin-bottom: 0;
       }
     }
   }
@@ -232,6 +335,33 @@ $button-soft-hover: #ffb77099;
         flex: 1;
         min-width: 0;
         margin-bottom: 0;
+      }
+
+      // Too narrow for letter, field and icon side by side: the letter and the delete
+      // icon move onto their own row, matching how .field stacks.
+      @media (max-width: $narrow-max) {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) max-content;
+        column-gap: 8px;
+        row-gap: 4px;
+
+        > span {
+          grid-column: 1;
+          grid-row: 1;
+          align-self: center;
+        }
+
+        .delete-icon {
+          grid-column: 2;
+          grid-row: 1;
+          justify-self: end;
+          align-self: center;
+        }
+
+        input {
+          grid-column: 1 / -1;
+          grid-row: 2;
+        }
       }
     }
 
@@ -296,17 +426,6 @@ $button-soft-hover: #ffb77099;
   }
 }
 
-.required {
-  color: var(--primary-orange);
-  font-weight: 700;
-}
-
-.required-note {
-  margin-top: 16px;
-  font-size: 14px;
-  color: #fff;
-}
-
 .field-error {
   grid-column: 1 / -1;
   margin-top: 4px;
@@ -343,30 +462,14 @@ $button-soft-hover: #ffb77099;
   cursor: progress;
 }
 
-.published-frame {
-  .published-body {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 40px 24px;
-    background-color: #8e709929;
-    border-radius: 5px 80px 5px 5px;
-    color: #fff;
-
-    img {
-      flex-shrink: 0;
-      width: 40px;
-      height: 40px;
-    }
-
-    p {
-      font-size: 18px;
-      line-height: 26px;
-    }
+@keyframes publish-overlay-in {
+  from {
+    transform: translateX(calc(100% + 24px));
+    opacity: 0;
   }
 
-  .published-actions {
-    display: flex;
-    justify-content: flex-end;
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
 }

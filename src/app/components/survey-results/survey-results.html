@@ -9,32 +9,41 @@
         <h2>Survey results</h2>
         <span class="status">{{ live() ? 'LIVE' : 'FINAL' }}</span>
       </div>
-      <div class="results">
-        @for (question of results(); track question.id; let questionIndex = $index) {
-          <div class="result">
-            <div class="question">
-              <span class="number">{{ questionIndex + 1 }}.</span>
-              <h3>{{ question.text }}</h3>
-            </div>
-            <div class="bars">
-              @for (option of question.options; track option.id; let optionIndex = $index) {
-                <div class="bar">
-                  <span class="letter">{{ letter(optionIndex) }}</span>
-                  <div class="progressbar">
-                    <div class="filler" [style.width.%]="option.percent"></div>
+      @if (loading()) {
+        <p class="state">Loading results …</p>
+      } @else if (!hasVotes()) {
+        <div class="empty">
+          <p class="empty-lead">
+            Results will be shown here after participants complete the survey.
+          </p>
+          <p class="empty-note">There are no answers yet.</p>
+        </div>
+      } @else {
+        <div class="results">
+          @for (question of results(); track question.id; let questionIndex = $index) {
+            <div class="result">
+              <div class="question">
+                <span class="number">{{ questionIndex + 1 }}.</span>
+                <h3>{{ question.text }}</h3>
+              </div>
+              <div class="bars">
+                @for (option of question.options; track option.id; let optionIndex = $index) {
+                  <div class="bar">
+                    <span class="letter">{{ letter(optionIndex) }}</span>
+                    <div class="progressbar">
+                      <div class="filler" [style.width.%]="option.percent"></div>
+                    </div>
+                    <span class="percent">{{ option.percent }}%</span>
                   </div>
-                  <span class="percent">{{ option.percent }}%</span>
-                </div>
-              }
+                }
+              </div>
+              <span class="total">
+                {{ question.totalVotes }} {{ question.totalVotes === 1 ? 'vote' : 'votes' }}
+              </span>
             </div>
-            <span class="total">
-              {{ question.totalVotes }} {{ question.totalVotes === 1 ? 'vote' : 'votes' }}
-            </span>
-          </div>
-        } @empty {
-          <p class="state">{{ loading() ? 'Loading results …' : 'No votes yet.' }}</p>
-        }
-      </div>
+          }
+        </div>
+      }
     </div>
   </div>
 </section>
