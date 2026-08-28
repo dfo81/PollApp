@@ -30,9 +30,9 @@
             [attr.aria-invalid]="attempted() && titleMissing()"
             (input)="setTitle($event)"
           />
-          @if (attempted() && titleMissing()) {
-            <p class="field-error">Please name your survey.</p>
-          }
+          <p class="field-error" [class.blank]="!(attempted() && titleMissing())">
+            Please name your survey.
+          </p>
         </div>
 
         <div class="date-category-row">
@@ -51,9 +51,9 @@
               [invalid]="attempted() && endDateInvalid()"
               (valueChange)="endDate.set($event)"
             />
-            @if (attempted() && endDateInvalid()) {
-              <p class="field-error">The end date has to be in the future.</p>
-            }
+            <p class="field-error" [class.blank]="!(attempted() && endDateInvalid())">
+              The end date has to be in the future.
+            </p>
           </div>
 
           <app-category-select
@@ -61,10 +61,6 @@
             [invalid]="attempted() && categoryMissing()"
             (valueChange)="category.set($event)"
           />
-
-          @if (attempted() && categoryMissing()) {
-            <p class="field-error">Please pick a category.</p>
-          }
         </div>
       </div>
       <div class="description-frame">
@@ -102,9 +98,9 @@
             [attr.aria-invalid]="attempted() && questionMissing(question)"
             (input)="setQuestionText(question.id, $event)"
           />
-          @if (attempted() && questionMissing(question)) {
-            <p class="field-error">Please write a question.</p>
-          }
+          <p class="field-error" [class.blank]="!(attempted() && questionMissing(question))">
+            Please write a question.
+          </p>
           <div class="answer-title">
             <span>Answers</span>
             <div
@@ -147,9 +143,9 @@
               />
             </div>
           }
-          @if (attempted() && anyAnswerMissing(question)) {
-            <p class="field-error">Every answer needs a text.</p>
-          }
+          <p class="field-error" [class.blank]="!(attempted() && anyAnswerMissing(question))">
+            Every answer needs a text.
+          </p>
           <button class="add-button" type="button" (click)="addAnswer(question.id)">
             <span>Add answer</span>
             <img src="assets/icons/add_circle_white.svg" alt="" />
@@ -161,9 +157,7 @@
       </button>
     </div>
 
-    @if (saveError(); as message) {
-      <p class="save-error">{{ message }}</p>
-    }
+    <p class="save-error" [class.blank]="!saveError()">{{ saveError() }}</p>
 
     <div class="publish-row">
       <button

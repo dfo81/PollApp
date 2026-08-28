@@ -115,6 +115,45 @@ export function share(option: SurveyOption, votes: number, total: number): Optio
 }
 
 /**
+ * Lays the options a visitor has ticked but not yet submitted on top of the tally, so
+ * the bars show right away what those votes would do to the percentages. The extra
+ * votes exist in this browser only, until the ballot is submitted.
+ *
+ * @param results Results as they were counted in the database.
+ * @param selection Option ids the visitor has ticked, across all questions.
+ * @returns The results including the pending votes.
+ */
+export function withPreview(
+  results: QuestionResult[],
+  selection: ReadonlySet<string>,
+): QuestionResult[] {
+  if (selection.size === 0) {
+    return results;
+  }
+
+  return results.map((question) => previewQuestion(question, selection));
+}
+
+/**
+ * Adds the pending votes of one question to its result. Recounts the percentages the
+ * same way {@link tally} does, so they do not jump once the real votes come back.
+ *
+ * @param question Result of the question as it was counted in the database.
+ * @param selection Option ids the visitor has ticked, across all questions.
+ * @returns The result of the question including its pending votes.
+ */
+function previewQuestion(question: QuestionResult, selection: ReadonlySet<string>): QuestionResult {
+  const votes = question.options.map((option) => option.votes + (selection.has(option.id) ? 1 : 0));
+  const total = votes.reduce((sum, count) => sum + count, 0);
+
+  return {
+    ...question,
+    totalVotes: total,
+    options: question.options.map((option, index) => share(option, votes[index], total)),
+  };
+}
+
+/**
  * Counts how often each option appears in the raw vote rows.
  *
  * @param rows Vote rows of the survey.

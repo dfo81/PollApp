@@ -284,6 +284,13 @@
   margin-top: 4px;
   font-size: 14px;
   color: var(--secondary-orange);
+
+  // The line is always there and only turns invisible, so revealing an error does not
+  // push the fields below it down. visibility, not display: the box has to keep its
+  // height. It drops out of the accessibility tree either way.
+  &.blank {
+    visibility: hidden;
+  }
 }
 
 .input-fields {

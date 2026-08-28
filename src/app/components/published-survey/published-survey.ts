@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, model, output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { SurveyService } from '../../core/survey-service';
 import {
@@ -10,7 +10,7 @@ import {
 } from '../../core/survey.models';
 
 /** Option ids the visitor has picked. */
-type Selection = ReadonlySet<string>;
+export type Selection = ReadonlySet<string>;
 
 /**
  * Ballot of a published survey. A closed survey is still shown but no longer accepts
@@ -31,8 +31,11 @@ export class PublishedSurvey {
   /** Tells the parent to reload the results once the votes reached the database. */
   readonly voted = output<void>();
 
-  /** Option ids the visitor picked, across all questions of the survey. */
-  private readonly selection = signal<Selection>(new Set());
+  /**
+   * Option ids the visitor picked, across all questions of the survey. The detail view
+   * binds it so the results can preview the votes before they are submitted.
+   */
+  readonly selection = model<Selection>(new Set());
 
   /** True while the votes are being saved. */
   protected readonly submitting = signal(false);

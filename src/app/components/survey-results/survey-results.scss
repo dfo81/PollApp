@@ -119,7 +119,15 @@
             }
           }
 
+          // Both ends of the track are reserved, otherwise "5%" leaves the bar of its
+          // row longer than the one next to a "100%".
+          .letter {
+            min-width: 12px;
+          }
+
           .percent {
+            min-width: 46px;
+            text-align: right;
             color: #d79451;
           }
         }

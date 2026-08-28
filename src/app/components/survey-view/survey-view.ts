@@ -1,8 +1,17 @@
-import { Component, computed, DestroyRef, inject, input, resource } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  input,
+  resource,
+  signal,
+} from '@angular/core';
 import { Router } from '@angular/router';
-import { PublishedSurvey } from '../published-survey/published-survey';
+import { PublishedSurvey, Selection } from '../published-survey/published-survey';
 import { SurveyResults } from '../survey-results/survey-results';
 import { SurveyService } from '../../core/survey-service';
+import { withPreview } from '../../core/survey-mapping';
 import { isRunning, QuestionResult, SurveyDetail } from '../../core/survey.models';
 
 /**
@@ -40,6 +49,29 @@ export class SurveyView {
     params: () => this.survey.value(),
     loader: ({ params }) => this.surveyService.loadResults(params),
   });
+
+  /**
+   * Options the visitor has ticked on the ballot, bound to the ballot itself. Not saved
+   * anywhere: they only exist until the ballot is submitted or the page is left.
+   */
+  protected readonly selection = signal<Selection>(new Set());
+
+  /** True once the visitor has voted, from then on their votes are in the results. */
+  private readonly voted = signal(false);
+
+  /**
+   * True while ticked but unsaved options are laid on top of the results. Ends with the
+   * vote, otherwise the visitor would be counted twice: once in the preview and once in
+   * the reloaded results.
+   */
+  protected readonly previewing = computed(() => !this.voted() && this.selection().size > 0);
+
+  /** The results as shown, including the options the visitor has ticked so far. */
+  protected readonly shownResults = computed(() =>
+    this.previewing()
+      ? withPreview(this.results.value(), this.selection())
+      : this.results.value(),
+  );
 
   /** Option ids of the survey on screen, used to sort out votes of other surveys. */
   private readonly optionIds = computed(
@@ -81,6 +113,7 @@ export class SurveyView {
 
   /** Sends the visitor back to the overview once their votes are saved. */
   protected onVoted(): void {
+    this.voted.set(true);
     void this.router.navigate(['/']);
   }
 

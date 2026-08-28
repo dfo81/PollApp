@@ -117,9 +117,15 @@
 
 
 .save-error {
+  min-height: 1lh;
   margin-top: 12px;
   font-size: 16px;
   color: var(--secondary-orange);
+
+  // Keeps the publish button in place, see .field-error.
+  &.blank {
+    visibility: hidden;
+  }
 }
 
 .publish:disabled {

@@ -5,6 +5,10 @@ main {
 
   @media (min-width: 1024px) {
     flex-direction: row;
+
+    app-published-survey {
+      flex: 0 1 702px;
+    }
   }
 }
 

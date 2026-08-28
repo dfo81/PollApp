@@ -1,4 +1,4 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, effect, input, signal } from '@angular/core';
 import { letter, QuestionResult } from '../../core/survey.models';
 
 /**
@@ -22,6 +22,13 @@ export class SurveyResults {
   readonly live = input(true);
 
   /**
+   * True while the results include the options the visitor has ticked but not yet
+   * submitted. Only used to open the collapsed results, the bars themselves need no
+   * marker: the numbers are as live as the badge above them says.
+   */
+  readonly preview = input(false);
+
+  /**
    * True as soon as a single vote is in. The service returns one entry per question
    * whether or not it was voted on, so an empty array is not what marks a fresh survey.
    */
@@ -34,6 +41,19 @@ export class SurveyResults {
 
   /** Letter in front of an answer option, see {@link letter}. */
   protected readonly letter = letter;
+
+  /**
+   * Opens the results as soon as a preview starts, so the bars are not hidden behind the
+   * button while the visitor ticks their answers. Only reacts to the start of a preview,
+   * a visitor who closes the results again is left alone.
+   */
+  constructor() {
+    effect(() => {
+      if (this.preview()) {
+        this.resultsOpen.set(true);
+      }
+    });
+  }
 
   /** Shows or hides the results below the desktop breakpoint. */
   protected toggleResults(): void {

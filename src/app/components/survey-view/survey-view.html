@@ -2,11 +2,12 @@
   @if (survey.error()) {
     <p class="state error">This survey could not be loaded.</p>
   } @else if (survey.value(); as detail) {
-    <app-published-survey [survey]="detail" (voted)="onVoted()" />
+    <app-published-survey [survey]="detail" [(selection)]="selection" (voted)="onVoted()" />
     <app-survey-results
-      [results]="results.value()"
+      [results]="shownResults()"
       [loading]="results.isLoading()"
       [live]="live(detail)"
+      [preview]="previewing()"
     />
   } @else {
     <p class="state">Loading survey …</p>
